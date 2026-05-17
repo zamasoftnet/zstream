@@ -1,0 +1,21 @@
+.gradle/
+build/
+.gradle-home/
+bin/
+out/
+target/
+*.class
+*.log
+
+# IDE
+.idea/
+.vscode/
+*.iml
+.classpath
+.project
+.settings/
+.factorypath
+
+# OS
+.DS_Store
+Thumbs.db

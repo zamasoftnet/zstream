@@ -1,0 +1,90 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id 'signing'
+}
+
+allprojects {
+    group = 'net.zamasoft'
+    version = '1.0.0-SNAPSHOT'
+
+    repositories {
+        mavenCentral()
+    }
+}
+
+subprojects {
+    apply plugin: 'java-library'
+    apply plugin: 'maven-publish'
+    apply plugin: 'signing'
+
+    java {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(8)
+        }
+        withSourcesJar()
+        withJavadocJar()
+    }
+
+    dependencies {
+        testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
+        testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+
+    tasks.withType(JavaCompile).configureEach {
+        options.encoding = 'UTF-8'
+    }
+
+    tasks.withType(Javadoc).configureEach {
+        enabled = false
+        options.encoding = 'UTF-8'
+        options.addStringOption('Xdoclint:none')
+        if (JavaVersion.current().isJava9Compatible()) {
+            options.addBooleanOption('html5', true)
+        }
+    }
+
+    publishing {
+        publications {
+            maven(MavenPublication) {
+                from components.java
+                pom {
+                    name = "${project.group}:${project.name}"
+                    url = 'https://github.com/zamasoftnet/zstream/'
+                    licenses {
+                        license {
+                            name = 'Apache 2'
+                            url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                            distribution = 'repo'
+                        }
+                    }
+                    developers {
+                        developer {
+                            id = 'mimidesunya'
+                            name = 'MIYABE Tatsuhiko'
+                            email = 'miyabe.tatsuhiko@gmail.com'
+                            organization = 'Zamasoft'
+                            organizationUrl = 'https://zamasoft.net/'
+                        }
+                    }
+                    scm {
+                        connection = 'scm:git:https://github.com/zamasoftnet/zstream.git'
+                        developerConnection = 'scm:git:https://github.com/zamasoftnet/zstream.git'
+                        url = 'https://github.com/zamasoftnet/zstream'
+                    }
+                }
+            }
+        }
+    }
+
+    signing {
+        required { false }
+        sign publishing.publications.maven
+    }
+}
