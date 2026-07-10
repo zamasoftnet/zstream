@@ -19,3 +19,6 @@ target/
 # OS
 .DS_Store
 Thumbs.db
+# AIエージェント用ローカルガイド（git管理外）
+AGENTS.md
+CLAUDE.md
