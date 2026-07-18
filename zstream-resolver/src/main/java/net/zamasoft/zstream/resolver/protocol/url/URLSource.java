@@ -154,6 +154,8 @@ public class URLSource extends AbstractSource {
 					this.mimeType = "text/html";
 				} else if (".xml".equals(suffix) || ".xhtml".equals(suffix) || ".xht".equals(suffix)) {
 					this.mimeType = "text/xml";
+				} else if (".md".equals(suffix) || ".markdown".equals(suffix)) {
+					this.mimeType = "text/markdown";
 				} else {
 					this.mimeType = null;
 				}

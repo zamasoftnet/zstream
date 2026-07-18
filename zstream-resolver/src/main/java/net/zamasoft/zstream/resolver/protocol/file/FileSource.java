@@ -95,7 +95,8 @@ public class FileSource extends AbstractSource {
 	/**
 	 * Returns the MIME type of the file, auto-detected from the file extension
 	 * when not supplied at construction time.  Recognises {@code .html},
-	 * {@code .htm}, {@code .xml}, {@code .xhtml}, and {@code .xht}; all other
+	 * {@code .htm}, {@code .xml}, {@code .xhtml}, {@code .xht}, {@code .md},
+	 * and {@code .markdown}; all other
 	 * extensions yield {@code null}.
 	 *
 	 * @return the MIME type string, or {@code null} if it cannot be determined.
@@ -112,6 +113,8 @@ public class FileSource extends AbstractSource {
 					this.mimeType = "text/html";
 				} else if (".xml".equals(suffix) || ".xhtml".equals(suffix) || ".xht".equals(suffix)) {
 					this.mimeType = "text/xml";
+				} else if (".md".equals(suffix) || ".markdown".equals(suffix)) {
+					this.mimeType = "text/markdown";
 				} else {
 					this.mimeType = null;
 				}
