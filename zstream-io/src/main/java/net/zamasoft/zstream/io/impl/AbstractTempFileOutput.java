@@ -36,16 +36,114 @@ public abstract class AbstractTempFileOutput implements FragmentedOutput {
 
 	/**
 	 * Configuration for buffer management.
-	 * 
-	 * @param chunkSize maximum size of each memory chunk (e.g., 64KB).
+	 * <p>
+	 * {@code maxMemory} is the amount of heap this instance may retain;
+	 * {@code chunkSize} decides how much real data fits inside it, because every
+	 * fragment occupies a whole chunk regardless of how few bytes it holds. See
+	 * {@link #DEFAULT} for the measurements behind the defaults.
+	 * </p>
+	 *
+	 * @param chunkSize maximum size of each memory chunk (e.g., 8KB).
 	 * @param maxMemory maximum total memory to use before spilling to disk.
 	 */
 	public static class Config {
-		/** Default configuration: 64KB chunks, 64MB max memory. */
-		public static final Config DEFAULT = new Config(64 * 1024, 64 * 1024 * 1024);
+		/**
+		 * Default configuration: 8KB chunks, 16MB max memory.
+		 * <p>
+		 * Measured 2026-07-27 (JDK 21, Windows 11, NVMe temp dir) with
+		 * {@code TempFileOutputBenchmark} in {@code src/test}; 7-11 timed
+		 * repetitions per point, 95% confidence intervals typically +/-3..8%.
+		 * The grid covered chunkSize 4KB..1MB x maxMemory 1MB..256MB x payload
+		 * 64KB..256MB, over four access patterns including the one pdfg2d
+		 * actually produces (a main flow plus two tiny fragments per object,
+		 * created by {@code PDFFragmentOutputImpl.forkFragment()}).
+		 * </p>
+		 * <p>
+		 * <b>maxMemory is the heap cost, exactly.</b> Retained heap was measured
+		 * as {@code min(demand, maxMemory)} in every configuration, and with four
+		 * concurrent instances it was 4 x maxMemory (261MB retained at 64MB each).
+		 * The old 64MB therefore consumed about half of the ~128MB per-conversion
+		 * budget of the HTML-to-PDF engine, per instance; 16MB is ~12%.
+		 * </p>
+		 * <p>
+		 * <b>chunkSize sets how much real data fits in that budget.</b> Every
+		 * fragment holds one whole chunk however few bytes it contains, so a
+		 * document with F fragments needs {@code payload + F * chunkSize}. For the
+		 * pdfg2d pattern F is about payload/4KB, so 64KB chunks needed ~17x the
+		 * payload in RAM (1MB of PDF retained 17MB) while 8KB chunks need ~3x
+		 * (1MB retained 3MB). 8KB also matches {@code PDFWriterImpl.BUFFER_SIZE},
+		 * so a caller's write lands in exactly one chunk.
+		 * </p>
+		 * <p>
+		 * Throughput, 8KB/16MB vs the previous 64KB/64MB (MB/s, mean +/- 95% CI):
+		 * </p>
+		 * <pre>
+		 * payload   pattern      64KB/64MB        8KB/16MB       retained heap
+		 * 64KB      fork          851 +/-  49     3251 +/- 189    1MB  -&gt; 554KB
+		 * 1MB       fork          724 +/-  39     3815 +/- 199   17MB  -&gt;   3MB
+		 * 16MB      fork          172 +/-   6      257 +/-  14   65MB  -&gt;  17MB
+		 * 256MB     fork          286 +/-  11       59 +/-  15   67MB  -&gt;  20MB
+		 * 16MB      interleave   3444 +/- 306    11943 +/- 1033  66MB  -&gt;  16MB
+		 * 16MB      sequential  13684 +/- 558    15412 +/- 1106  16MB  -&gt;  16MB
+		 * 256MB     sequential   1033 +/- 269      626 +/-  82   66MB  -&gt;  16MB
+		 * </pre>
+		 * <p>
+		 * <b>Where the trade-off turns.</b> The grid above jumps from 16MB to
+		 * 256MB, so that gap was re-measured (phase {@code cliff}, same day).
+		 * Any output larger than {@code maxMemory} must spill, so cutting 64MB to
+		 * 16MB lowers the spill threshold - and what that costs depends entirely
+		 * on the access pattern (MB/s):
+		 * </p>
+		 * <pre>
+		 * payload   SEQ 64K/64M   SEQ 8K/16M    FORK 64K/64M   FORK 8K/16M
+		 *  16MB        13508         15478           143            183
+		 *  32MB        14712          1270 (!)        72             80
+		 *  64MB        14446           915 (!)        64             53
+		 * 128MB         1592           886           121             64
+		 * 256MB         1255           692           205             56
+		 * </pre>
+		 * <p>
+		 * SEQ collapses by 11-16x at 32-64MB - exactly the range the old 64MB
+		 * buffer used to hold entirely in RAM. <b>That pattern is not what the PDF
+		 * writer produces</b>: {@code PDFFragmentOutputImpl.forkFragment()} is
+		 * called once per stream-length backpatch and three times per page, so
+		 * real output is FORK, where the new default wins up to 32MB and loses
+		 * 1.2x at 64MB, 1.9x at 128MB, 3.6x at 256MB - a few seconds of I/O
+		 * inside a conversion that takes minutes at those sizes. (FORK intervals
+		 * are wide, +/-15..28%, so the 32-64MB differences are within noise; only
+		 * the 128MB and 256MB losses are outside it.)
+		 * </p>
+		 * <p>
+		 * <b>Real outputs sit below the turn.</b> A 100,000-row Japanese table
+		 * (13.8MB of HTML, 35s to convert) produces a <b>10.6MB</b> PDF (measured
+		 * 2026-07-27) - inside the range where the new default is both faster and
+		 * 4x smaller in heap. A caller that knowingly produces much larger output,
+		 * or that appends one fragment sequentially, should pass its own
+		 * {@link Config} with a larger {@code maxMemory}.
+		 * </p>
+		 * <p>
+		 * A fixed byte count was chosen over a fraction of
+		 * {@link Runtime#maxMemory()} deliberately: the measurement above shows
+		 * retention scales with the number of concurrent instances, which this
+		 * class cannot see. A "10% of the heap" rule would hand 10% to each of N
+		 * concurrent conversions and overshoot the heap by a factor of N.
+		 * </p>
+		 */
+		public static final Config DEFAULT = new Config(8 * 1024, 16 * 1024 * 1024);
 
-		/** Configuration for purely in-memory processing. */
-		public static final Config ON_MEMORY = new Config(64 * 1024, Long.MAX_VALUE);
+		/**
+		 * Configuration for purely in-memory processing.
+		 * <p>
+		 * The chunk size matters more here than in {@link #DEFAULT}, not less:
+		 * with no memory cap the per-fragment chunk overhead is never reclaimed
+		 * by a spill. Measured 2026-07-27, the same run as above, 1MB of payload
+		 * over 257 fragments retained 17MB with 64KB chunks and 3MB with 8KB
+		 * chunks, at 724 +/- 39 MB/s and 3815 +/- 199 MB/s respectively - so the
+		 * previous 64KB was worse on both axes and was changed to match
+		 * {@link #DEFAULT}.
+		 * </p>
+		 */
+		public static final Config ON_MEMORY = new Config(8 * 1024, Long.MAX_VALUE);
 
 		private final int chunkSize;
 		private final long maxMemory;
@@ -77,6 +175,10 @@ public abstract class AbstractTempFileOutput implements FragmentedOutput {
 	// Global State
 	protected long currentMemoryUsage = 0;
 	protected long totalLength = 0;
+
+	// Diagnostics (cumulative, never reset by cleanup)
+	private long spillCount = 0;
+	private long spilledBytes = 0;
 
 	// Storage
 	protected File tempFile;
@@ -342,6 +444,8 @@ public abstract class AbstractTempFileOutput implements FragmentedOutput {
 			while (written < length) {
 				written += fileChannel.write(bufArray);
 			}
+			++spillCount;
+			spilledBytes += length;
 
 			// Replace chunks in list with a single FileChunk
 			chunks.subList(startIndex, endIndex).clear();
@@ -486,6 +590,30 @@ public abstract class AbstractTempFileOutput implements FragmentedOutput {
 	 */
 	public long getLength() {
 		return totalLength;
+	}
+
+	/**
+	 * Returns how many times a block of in-memory chunks has been written out to
+	 * the temporary file. Diagnostics only; the counter is cumulative and is not
+	 * reset when the instance is closed.
+	 *
+	 * @return number of spill writes performed so far
+	 * @since 1.2
+	 */
+	public long getSpillCount() {
+		return spillCount;
+	}
+
+	/**
+	 * Returns the total number of bytes written to the temporary file.
+	 * Diagnostics only; the counter is cumulative and is not reset when the
+	 * instance is closed.
+	 *
+	 * @return number of bytes spilled to disk so far
+	 * @since 1.2
+	 */
+	public long getSpilledBytes() {
+		return spilledBytes;
 	}
 
 	@Override

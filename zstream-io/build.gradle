@@ -2,6 +2,27 @@ description = 'Random Builder'
 
 // zstream-io has no external dependencies based on the POM file
 
+// Measurement harness for AbstractTempFileOutput.Config tuning constants.
+// Not part of `build`; run explicitly, e.g.
+//   gradlew :zstream-io:bench -Pbench.args="phase=sweep reps=7" -Pbench.xmx=2g
+// The production target is Java 8 but the product (foliojet4/copperpdf4) runs on
+// Java 21, so the harness is executed on 21 to measure what production sees.
+tasks.register('bench', JavaExec) {
+    group = 'verification'
+    description = 'Runs TempFileOutputBenchmark (chunkSize/maxMemory measurement harness).'
+    dependsOn tasks.named('testClasses')
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'net.zamasoft.zstream.io.impl.TempFileOutputBenchmark'
+    javaLauncher = javaToolchains.launcherFor {
+        languageVersion = JavaLanguageVersion.of(providers.gradleProperty('bench.jdk').getOrElse('21') as int)
+    }
+    jvmArgs = ['-Xmx' + providers.gradleProperty('bench.xmx').getOrElse('2g'),
+               '-Xms' + providers.gradleProperty('bench.xmx').getOrElse('2g')]
+    args = (providers.gradleProperty('bench.args').getOrElse('') as String).split(' ').findAll { it }
+    // Timings must not be polluted by other work in the daemon.
+    outputs.upToDateWhen { false }
+}
+
 publishing {
     publications {
         maven(MavenPublication) {
