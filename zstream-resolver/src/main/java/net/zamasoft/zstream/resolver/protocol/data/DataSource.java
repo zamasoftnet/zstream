@@ -11,8 +11,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.StringTokenizer;
 
-import org.apache.commons.codec.DecoderException;
-import org.apache.commons.codec.net.URLCodec;
 
 import net.zamasoft.zstream.resolver.SourceValidity;
 import net.zamasoft.zstream.resolver.util.AbstractSource;
@@ -54,57 +52,53 @@ public class DataSource extends AbstractSource {
 	private void parse() throws IOException {
 		if (!this.parsed) {
 			this.parsed = true;
-			try {
-				String spec = this.uri.getRawSchemeSpecificPart();
-				int comma = spec.indexOf(',');
-				if (comma != -1) {
-					String type = spec.substring(0, comma);
-					String dataStr = spec.substring(comma + 1);
-					boolean base64 = false;
-					for (StringTokenizer st = new StringTokenizer(type, ";"); st.hasMoreElements();) {
-						String token = st.nextToken();
-						if (this.mimeType == null) {
-							if (token.indexOf('/') != -1) {
-								this.mimeType = token;
-								continue;
-							} else {
-								this.mimeType = "text/plain";
-								this.encoding = "US-ASCII";
-							}
-						}
-						int equal = token.indexOf('=');
-						if (equal != -1) {
-							String name = token.substring(0, equal);
-							if (name.equalsIgnoreCase("charset")) {
-								this.encoding = token.substring(equal + 1);
-							}
+			String spec = this.uri.getRawSchemeSpecificPart();
+			int comma = spec.indexOf(',');
+			if (comma != -1) {
+				String type = spec.substring(0, comma);
+				String dataStr = spec.substring(comma + 1);
+				boolean base64 = false;
+				for (StringTokenizer st = new StringTokenizer(type, ";"); st.hasMoreElements();) {
+					String token = st.nextToken();
+					if (this.mimeType == null) {
+						if (token.indexOf('/') != -1) {
+							this.mimeType = token;
+							continue;
 						} else {
-							if (token.equalsIgnoreCase("base64")) {
-								base64 = true;
-							}
+							this.mimeType = "text/plain";
+							this.encoding = "US-ASCII";
 						}
 					}
-					if (base64) {
-						byte[] bytes;
-						if (dataStr.indexOf('%') != -1) {
-							// If base64 is further URL encoded
-							// prevent + from being replaced by space
-							dataStr = dataStr.replaceAll("\\+", "%2B");
-							bytes = dataStr.getBytes(StandardCharsets.ISO_8859_1);
-							bytes = URLCodec.decodeUrl(bytes);
-						} else {
-							bytes = dataStr.getBytes(StandardCharsets.ISO_8859_1);
+					int equal = token.indexOf('=');
+					if (equal != -1) {
+						String name = token.substring(0, equal);
+						if (name.equalsIgnoreCase("charset")) {
+							this.encoding = token.substring(equal + 1);
 						}
-						this.data = Base64.getMimeDecoder().decode(bytes);
 					} else {
-						this.data = URLCodec.decodeUrl(dataStr.getBytes(StandardCharsets.ISO_8859_1));
+						if (token.equalsIgnoreCase("base64")) {
+							base64 = true;
+						}
 					}
-				} else {
-					throw new IOException("No data in data: scheme");
 				}
-			} catch (DecoderException e) {
-				throw new IOException(e);
-			}
+				if (base64) {
+					byte[] bytes;
+					if (dataStr.indexOf('%') != -1) {
+						// If base64 is further URL encoded
+						// prevent + from being replaced by space
+						dataStr = dataStr.replaceAll("\\+", "%2B");
+						bytes = dataStr.getBytes(StandardCharsets.ISO_8859_1);
+						bytes = decodeUrl(bytes);
+					} else {
+						bytes = dataStr.getBytes(StandardCharsets.ISO_8859_1);
+					}
+					this.data = Base64.getMimeDecoder().decode(bytes);
+				} else {
+					this.data = decodeUrl(dataStr.getBytes(StandardCharsets.ISO_8859_1));
+				}
+		} else {
+			throw new IOException("No data in data: scheme");
+		}
 		}
 	}
 
@@ -246,4 +240,35 @@ public class DataSource extends AbstractSource {
 	public SourceValidity getValidity() throws IOException {
 		return ValidSourceValidity.SHARED_INSTANCE;
 	}
+	/**
+	 * {@code application/x-www-form-urlencoded}系のデコードです
+	 * (2026-08-01にcommons-codecの{@code URLCodec.decodeUrl}を置換——
+	 * 同一意味論: {@code %XX}展開+{@code '+'}→空白。base64枝は呼び出し側が
+	 * {@code '+'}を{@code %2B}へ事前エスケープして空白化を防ぐ従来の
+	 * 挙動のまま)。不正なエスケープは{@link IOException}。
+	 */
+	private static byte[] decodeUrl(final byte[] bytes) throws IOException {
+		final java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream(bytes.length);
+		for (int i = 0; i < bytes.length; ++i) {
+			final int b = bytes[i];
+			if (b == '+') {
+				out.write(' ');
+			} else if (b == '%') {
+				if (i + 2 >= bytes.length) {
+					throw new IOException("Invalid URL encoding: incomplete escape sequence");
+				}
+				final int hi = Character.digit(bytes[i + 1], 16);
+				final int lo = Character.digit(bytes[i + 2], 16);
+				if (hi < 0 || lo < 0) {
+					throw new IOException("Invalid URL encoding: not a hex digit");
+				}
+				out.write((hi << 4) + lo);
+				i += 2;
+			} else {
+				out.write(b);
+			}
+		}
+		return out.toByteArray();
+	}
+
 }

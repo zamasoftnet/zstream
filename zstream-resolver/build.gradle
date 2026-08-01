@@ -1,9 +1,6 @@
 description = 'Source Resolver'
 
 dependencies {
-    implementation 'commons-codec:commons-codec:1.15'
-    implementation 'commons-io:commons-io:2.11.0'
-    implementation 'commons-logging:commons-logging:1.2'
 }
 
 publishing {

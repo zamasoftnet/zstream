@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
-import org.apache.commons.io.IOUtils;
 import net.zamasoft.zstream.resolver.SourceMetadata;
 import net.zamasoft.zstream.resolver.Source;
 import net.zamasoft.zstream.resolver.SourceResolver;
@@ -176,7 +175,12 @@ public class CachedSourceResolver implements SourceResolver {
 	public void putSource(final Source source) throws IOException {
 		final File file = this.putFile(source);
 		try (final java.io.InputStream in = source.getInputStream(); final FileOutputStream out = new FileOutputStream(file)) {
-			IOUtils.copy(in, out);
+			// Java 8ターゲットのためInputStream.transferTo(9+)は使えない
+			// (2026-08-01にcommons-io IOUtils.copyを置換)
+			final byte[] buffer = new byte[8192];
+			for (int n; (n = in.read(buffer)) != -1;) {
+				out.write(buffer, 0, n);
+			}
 		}
 	}
 
