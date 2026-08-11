@@ -30,6 +30,22 @@ public class FileFragmentedOutput extends AbstractTempFileOutput implements Sequ
 	protected OutputStream out = null;
 
 	/**
+	 * Whether {@link #close()} has already run.
+	 * <p>
+	 * Closing twice used to <b>truncate the finished file to zero bytes</b>:
+	 * the second call found {@code out == null} (the first call cleared it),
+	 * took the "assemble fragments" branch, opened a fresh
+	 * {@link FileOutputStream} on the target file - which truncates it - and
+	 * then wrote nothing, because the fragment buffers had already been
+	 * released. {@link java.io.Closeable#close()} requires that closing an
+	 * already closed stream has no effect, so the second call is now a no-op
+	 * (2026-08-11; a PDF written through this class came out empty because
+	 * two layers each closed the same output).
+	 * </p>
+	 */
+	private boolean closed = false;
+
+	/**
 	 * Creates a new file output with custom buffer settings.
 	 * 
 	 * @param file   target output file.
@@ -82,6 +98,12 @@ public class FileFragmentedOutput extends AbstractTempFileOutput implements Sequ
 	 */
 	@Override
 	public void close() throws IOException {
+		if (this.closed) {
+			// Already closed: do nothing (see the field comment - a second
+			// close would truncate the finished file)
+			return;
+		}
+		this.closed = true;
 		try {
 			// If sequential mode was used, just close the stream
 			if (this.out != null) {

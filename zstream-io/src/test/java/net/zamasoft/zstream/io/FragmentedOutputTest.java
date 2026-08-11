@@ -155,6 +155,38 @@ class FragmentedOutputTest {
         assertEquals("132", trackedOut.toString(StandardCharsets.ISO_8859_1.name()));
     }
 
+    @Test
+    void testCloseIsIdempotentAndKeepsTheWrittenFile() throws Exception {
+        // Closing twice must have no effect (Closeable#close). The second
+        // close used to reopen the target file - truncating it - and then
+        // write nothing, so a finished PDF came out as an empty file
+        // (2026-08-11).
+        final File file = new File(this.tempDir, "sequential.bin");
+        final FileFragmentedOutput sequential = new FileFragmentedOutput(file);
+        sequential.write(bytes("HELLO"), 0, 5);
+        sequential.close();
+        assertArrayEquals(bytes("HELLO"), Files.readAllBytes(file.toPath()));
+        sequential.close();
+        assertArrayEquals(bytes("HELLO"), Files.readAllBytes(file.toPath()));
+
+        final File fragmented = new File(this.tempDir, "fragmented.bin");
+        final FileFragmentedOutput output = new FileFragmentedOutput(fragmented);
+        output.addFragment();
+        output.write(0, bytes("WORLD"), 0, 5);
+        output.close();
+        assertArrayEquals(bytes("WORLD"), Files.readAllBytes(fragmented.toPath()));
+        output.close();
+        assertArrayEquals(bytes("WORLD"), Files.readAllBytes(fragmented.toPath()));
+
+        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        final StreamFragmentedOutput streamOutput = new StreamFragmentedOutput(stream,
+                AbstractTempFileOutput.Config.ON_MEMORY);
+        streamOutput.write(bytes("BYTES"), 0, 5);
+        streamOutput.close();
+        streamOutput.close();
+        assertArrayEquals(bytes("BYTES"), stream.toByteArray());
+    }
+
     private static byte[] bytes(final String value) {
         return value.getBytes(StandardCharsets.ISO_8859_1);
     }

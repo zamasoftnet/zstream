@@ -26,6 +26,14 @@ public class StreamFragmentedOutput extends AbstractTempFileOutput implements Se
 	private final OutputStream out;
 
 	/**
+	 * Whether {@link #close()} has already run. Closing twice must have no
+	 * effect ({@link java.io.Closeable#close()}); the sibling
+	 * {@link FileFragmentedOutput} lost the whole file that way
+	 * (2026-08-11).
+	 */
+	private boolean closed = false;
+
+	/**
 	 * Creates a new stream output with custom buffer settings.
 	 * 
 	 * @param out    target output stream.
@@ -74,6 +82,10 @@ public class StreamFragmentedOutput extends AbstractTempFileOutput implements Se
 	 */
 	@Override
 	public void close() throws IOException {
+		if (this.closed) {
+			return;
+		}
+		this.closed = true;
 		try {
 			this.finish(this.out);
 			this.out.close();
