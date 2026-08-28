@@ -148,6 +148,27 @@ public class RestrictedSourceResolver implements SourceResolver {
 	}
 
 	/**
+	 * Evaluates the ACL for the given URI without resolving it.  Mirrors the
+	 * decision {@link #resolve(URI, boolean) resolve(uri, false)} would make:
+	 * the first matching pattern decides; with no match only {@code data:} is
+	 * permitted.
+	 *
+	 * @param uri the URI to check; must not be {@code null}.
+	 * @return {@code true} if the ACL permits the URI.
+	 */
+	public boolean permits(URI uri) {
+		uri = uri.normalize();
+		String key = toKey(uri);
+		key = key.replaceAll("\\*", "%2A");
+		for (Pattern pattern : this.acl) {
+			if (WildcardHelper.match(key, pattern.pattern)) {
+				return pattern.permit;
+			}
+		}
+		return "data".equals(uri.getScheme());
+	}
+
+	/**
 	 * Resolves the given URI after checking the ACL.  Equivalent to calling
 	 * {@link #resolve(URI, boolean) resolve(uri, false)}.
 	 *
