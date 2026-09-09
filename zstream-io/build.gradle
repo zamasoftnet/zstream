@@ -5,7 +5,7 @@ description = 'Random Builder'
 // Measurement harness for AbstractTempFileOutput.Config tuning constants.
 // Not part of `build`; run explicitly, e.g.
 //   gradlew :zstream-io:bench -Pbench.args="phase=sweep reps=7" -Pbench.xmx=2g
-// The production target is Java 8 but the product (foliojet4/copperpdf4) runs on
+// The production target is Java 8 but the product runs on
 // Java 21, so the harness is executed on 21 to measure what production sees.
 tasks.register('bench', JavaExec) {
     group = 'verification'
