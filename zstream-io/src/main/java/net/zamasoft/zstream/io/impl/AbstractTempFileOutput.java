@@ -743,8 +743,8 @@ public abstract class AbstractTempFileOutput implements FragmentedOutput {
 	 */
 	private void ensureFileOpen() throws IOException {
 		if (fileChannel == null) {
+			// Owned by cleanup(); deleteOnExit would only grow the JVM's exit list in a long-running server
 			tempFile = File.createTempFile("zstream-io-fast-", ".tmp");
-			tempFile.deleteOnExit();
 			raf = new RandomAccessFile(tempFile, "rw");
 			fileChannel = raf.getChannel();
 		}
@@ -759,15 +759,15 @@ public abstract class AbstractTempFileOutput implements FragmentedOutput {
 	 */
 	private void cleanup() {
 		try {
-			if (fileChannel != null)
-				fileChannel.close();
+			// Closing the file also closes its channel
 			if (raf != null)
 				raf.close();
-			if (tempFile != null)
-				tempFile.delete();
 		} catch (IOException e) {
 			LOG.log(Level.WARNING, "Failed to clean up temp resources", e);
 		} finally {
+			// Delete even when closing failed; it used to leak the file then
+			if (tempFile != null)
+				tempFile.delete();
 			fileChannel = null;
 			raf = null;
 			tempFile = null;

@@ -135,7 +135,8 @@ public class CachedSourceResolver implements SourceResolver {
 	 * Registers the given {@link SourceMetadata} in the cache index and returns a
 	 * newly created empty temporary file that the caller should populate with the
 	 * resource bytes. If a previous entry exists for the same URI its file is
-	 * deleted before the new one is created.
+	 * deleted once the new one has been created; if creating it fails, the
+	 * previous entry is left as it was.
 	 *
 	 * @param sourceMetadata metadata of the resource to cache; must not be
 	 *                        {@code null}.
@@ -144,28 +145,37 @@ public class CachedSourceResolver implements SourceResolver {
 	 *                     metadata causes an I/O error.
 	 */
 	public File putFile(final SourceMetadata sourceMetadata) throws IOException {
-		final URI uri = sourceMetadata.getURI().normalize();
-		final String key = toKey(uri);
-		CachedSourceInfo info = this.uriToSource.get(key);
-		if (info != null) {
-			if (!info.file.delete()) {
-				// log warning?
-			}
-		}
-
-		final String mimeType = sourceMetadata.getMimeType();
-		final String encoding = sourceMetadata.getEncoding();
-		final File file = File.createTempFile("cssj-cache-", ".dat", this.tmpDir);
-		file.deleteOnExit();
-		info = new CachedSourceInfo(uri, mimeType, encoding, file);
-		this.uriToSource.put(key, info);
+		final File file = this.createFile();
+		this.register(sourceMetadata, file);
 		return file;
+	}
+
+	/** Creates a cache file; {@link #reset()} deletes it once it is registered. */
+	private File createFile() throws IOException {
+		return File.createTempFile("cssj-cache-", ".dat", this.tmpDir);
+	}
+
+	private void register(final SourceMetadata sourceMetadata, final File file) throws IOException {
+		final URI uri = sourceMetadata.getURI().normalize();
+		final CachedSourceInfo info;
+		try {
+			info = new CachedSourceInfo(uri, sourceMetadata.getMimeType(), sourceMetadata.getEncoding(), file);
+		} catch (IOException | RuntimeException e) {
+			file.delete();
+			throw e;
+		}
+		final CachedSourceInfo previous = this.uriToSource.put(toKey(uri), info);
+		if (previous != null) {
+			previous.file.delete();
+		}
 	}
 
 	/**
 	 * Copies the content of {@code source} into a temporary cache file and
-	 * registers it in the index.  The source's input stream is consumed exactly
-	 * once; the source itself is not closed by this method.
+	 * registers it in the index once the copy is complete; if the copy fails, the
+	 * previous entry for the same URI is left as it was.  The source's input
+	 * stream is consumed exactly once; the source itself is not closed by this
+	 * method.
 	 *
 	 * @param source the source whose content should be cached; must not be
 	 *               {@code null} and must support {@link Source#getInputStream()}.
@@ -173,7 +183,7 @@ public class CachedSourceResolver implements SourceResolver {
 	 *                     fails.
 	 */
 	public void putSource(final Source source) throws IOException {
-		final File file = this.putFile(source);
+		final File file = this.createFile();
 		try (final java.io.InputStream in = source.getInputStream(); final FileOutputStream out = new FileOutputStream(file)) {
 			// Java 8ターゲットのためInputStream.transferTo(9+)は使えない
 			// (2026-08-01にcommons-io IOUtils.copyを置換)
@@ -181,7 +191,11 @@ public class CachedSourceResolver implements SourceResolver {
 			for (int n; (n = in.read(buffer)) != -1;) {
 				out.write(buffer, 0, n);
 			}
+		} catch (IOException | RuntimeException e) {
+			file.delete();
+			throw e;
 		}
+		this.register(source, file);
 	}
 
 	@Override
