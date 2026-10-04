@@ -12,6 +12,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import net.zamasoft.zstream.resolver.util.MimeTypes;
 import net.zamasoft.zstream.resolver.SourceValidity;
 import net.zamasoft.zstream.resolver.util.AbstractSource;
 import net.zamasoft.zstream.resolver.util.URIHelper;
@@ -137,9 +138,8 @@ public class ZIPFileSource extends AbstractSource {
 
 	/**
 	 * Returns the MIME type of the ZIP entry, auto-detected from the entry name's
-	 * extension when not supplied at construction time.  Recognises {@code .html},
-	 * {@code .htm}, {@code .xml}, {@code .xhtml}, and {@code .xht}; all other
-	 * extensions yield {@code null}.
+	 * extension when not supplied at construction time
+	 * ({@link MimeTypes#fromFileName}).
 	 *
 	 * @return the MIME type string, or {@code null} if it cannot be determined.
 	 * @throws IOException if an I/O error occurs.
@@ -147,18 +147,7 @@ public class ZIPFileSource extends AbstractSource {
 	@Override
 	public String getMimeType() throws IOException {
 		if (this.mimeType == null && this.entry != null) {
-			final String name = this.entry.getName();
-			final int dot = name.lastIndexOf('.');
-			if (dot != -1) {
-				final String suffix = name.substring(dot).toLowerCase();
-				if (".html".equals(suffix) || ".htm".equals(suffix)) {
-					this.mimeType = "text/html";
-				} else if (".xml".equals(suffix) || ".xhtml".equals(suffix) || ".xht".equals(suffix)) {
-					this.mimeType = "text/xml";
-				} else {
-					this.mimeType = null;
-				}
-			}
+			this.mimeType = MimeTypes.fromFileName(this.entry.getName());
 		}
 		return this.mimeType;
 	}

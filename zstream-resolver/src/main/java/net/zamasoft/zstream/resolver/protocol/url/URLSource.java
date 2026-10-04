@@ -14,6 +14,7 @@ import java.net.URLConnection;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import net.zamasoft.zstream.resolver.util.MimeTypes;
 import net.zamasoft.zstream.resolver.SourceValidity;
 import net.zamasoft.zstream.resolver.util.AbstractSource;
 
@@ -146,22 +147,9 @@ public class URLSource extends AbstractSource {
 	public String getMimeType() throws IOException {
 		if (this.mimeType == null) {
 			if (this.isFile()) {
-				final String filename = this.getFile().getName();
-				final int dot = filename.lastIndexOf('.');
-				if (dot != -1) {
-					final String suffix = filename.substring(dot).toLowerCase();
-					if (".html".equals(suffix) || ".htm".equals(suffix)) {
-					this.mimeType = "text/html";
-				} else if (".xml".equals(suffix) || ".xhtml".equals(suffix) || ".xht".equals(suffix)) {
-					this.mimeType = "text/xml";
-				} else if (".md".equals(suffix) || ".markdown".equals(suffix)) {
-					this.mimeType = "text/markdown";
-				} else {
-					this.mimeType = null;
-				}
-					if (this.mimeType != null) {
-						return this.mimeType;
-					}
+				this.mimeType = MimeTypes.fromFileName(this.getFile().getName());
+				if (this.mimeType != null) {
+					return this.mimeType;
 				}
 			}
 			try {

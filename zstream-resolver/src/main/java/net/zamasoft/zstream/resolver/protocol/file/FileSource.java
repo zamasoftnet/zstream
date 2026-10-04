@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URI;
 import java.util.Objects;
+import net.zamasoft.zstream.resolver.util.MimeTypes;
 import net.zamasoft.zstream.resolver.SourceValidity;
 import net.zamasoft.zstream.resolver.util.AbstractSource;
 import net.zamasoft.zstream.resolver.util.URIHelper;
@@ -94,10 +95,7 @@ public class FileSource extends AbstractSource {
 
 	/**
 	 * Returns the MIME type of the file, auto-detected from the file extension
-	 * when not supplied at construction time.  Recognises {@code .html},
-	 * {@code .htm}, {@code .xml}, {@code .xhtml}, {@code .xht}, {@code .md},
-	 * and {@code .markdown}; all other
-	 * extensions yield {@code null}.
+	 * when not supplied at construction time ({@link MimeTypes#fromFileName}).
 	 *
 	 * @return the MIME type string, or {@code null} if it cannot be determined.
 	 * @throws IOException if an I/O error occurs.
@@ -105,20 +103,7 @@ public class FileSource extends AbstractSource {
 	@Override
 	public String getMimeType() throws IOException {
 		if (this.mimeType == null) {
-			final String filename = this.file.getName();
-			final int dot = filename.lastIndexOf('.');
-			if (dot != -1) {
-				final String suffix = filename.substring(dot).toLowerCase();
-				if (".html".equals(suffix) || ".htm".equals(suffix)) {
-					this.mimeType = "text/html";
-				} else if (".xml".equals(suffix) || ".xhtml".equals(suffix) || ".xht".equals(suffix)) {
-					this.mimeType = "text/xml";
-				} else if (".md".equals(suffix) || ".markdown".equals(suffix)) {
-					this.mimeType = "text/markdown";
-				} else {
-					this.mimeType = null;
-				}
-			}
+			this.mimeType = MimeTypes.fromFileName(this.file.getName());
 		}
 		return this.mimeType;
 	}

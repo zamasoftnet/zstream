@@ -2,6 +2,7 @@ package net.zamasoft.zstream.resolver.protocol.data;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -67,4 +68,18 @@ public class DataSourceDecodeTest {
 	// 不正な%エスケープはjava.net.URI自体が拒否するため、decodeUrlの
 	// ガードには正規のURI経由では到達しない(旧URLCodec時代も同様)。
 	// ガードは多層防御として残す
+
+	/**
+	 * 解析に失敗した URI は、何度問い合わせても同じ IOException になる(2026-10-04。それまで 1 回目の失敗で
+	 * 解析済みの印だけが立ち、2 回目は NullPointerException になっていた)。不正な base64 も IOException にする。
+	 */
+	@Test
+	public void testFailedParseFailsAgainTheSameWay() {
+		for (final String uri : new String[] { "data:broken", "data:;base64,A" }) {
+			final DataSource source = new DataSource(URI.create(uri));
+			assertThrows(IOException.class, source::getInputStream, uri);
+			assertThrows(IOException.class, source::getLength, uri);
+			assertThrows(IOException.class, source::getMimeType, uri);
+		}
+	}
 }

@@ -86,9 +86,10 @@ public class StreamFragmentedOutput extends AbstractTempFileOutput implements Se
 			return;
 		}
 		this.closed = true;
-		try {
-			this.finish(this.out);
-			this.out.close();
+		// The target stream is closed even when assembling fails; before 2026-10-04 a failing
+		// finish skipped the close, and the closed flag kept a second close from reaching it
+		try (OutputStream target = this.out) {
+			this.finish(target);
 		} finally {
 			super.close();
 		}

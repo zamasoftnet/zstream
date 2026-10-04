@@ -49,57 +49,61 @@ public class DataSource extends AbstractSource {
 		super(uri);
 	}
 
+	/**
+	 * Parses the URI once. The fields are set only when the whole URI has been
+	 * decoded: setting {@code parsed} first (as before 2026-10-04) made a second
+	 * call after a failure skip the parse and fail with a NullPointerException.
+	 */
 	private void parse() throws IOException {
-		if (!this.parsed) {
-			this.parsed = true;
-			String spec = this.uri.getRawSchemeSpecificPart();
-			int comma = spec.indexOf(',');
-			if (comma != -1) {
-				String type = spec.substring(0, comma);
-				String dataStr = spec.substring(comma + 1);
-				boolean base64 = false;
-				for (StringTokenizer st = new StringTokenizer(type, ";"); st.hasMoreElements();) {
-					String token = st.nextToken();
-					if (this.mimeType == null) {
-						if (token.indexOf('/') != -1) {
-							this.mimeType = token;
-							continue;
-						} else {
-							this.mimeType = "text/plain";
-							this.encoding = "US-ASCII";
-						}
-					}
-					int equal = token.indexOf('=');
-					if (equal != -1) {
-						String name = token.substring(0, equal);
-						if (name.equalsIgnoreCase("charset")) {
-							this.encoding = token.substring(equal + 1);
-						}
-					} else {
-						if (token.equalsIgnoreCase("base64")) {
-							base64 = true;
-						}
-					}
-				}
-				if (base64) {
-					byte[] bytes;
-					if (dataStr.indexOf('%') != -1) {
-						// If base64 is further URL encoded
-						// prevent + from being replaced by space
-						dataStr = dataStr.replaceAll("\\+", "%2B");
-						bytes = dataStr.getBytes(StandardCharsets.ISO_8859_1);
-						bytes = decodeUrl(bytes);
-					} else {
-						bytes = dataStr.getBytes(StandardCharsets.ISO_8859_1);
-					}
-					this.data = Base64.getMimeDecoder().decode(bytes);
-				} else {
-					this.data = decodeUrl(dataStr.getBytes(StandardCharsets.ISO_8859_1));
-				}
-		} else {
+		if (this.parsed) {
+			return;
+		}
+		final String spec = this.uri.getRawSchemeSpecificPart();
+		final int comma = spec.indexOf(',');
+		if (comma == -1) {
 			throw new IOException("No data in data: scheme");
 		}
+		String mimeType = null;
+		String encoding = null;
+		boolean base64 = false;
+		for (StringTokenizer st = new StringTokenizer(spec.substring(0, comma), ";"); st.hasMoreElements();) {
+			final String token = st.nextToken();
+			if (mimeType == null) {
+				if (token.indexOf('/') != -1) {
+					mimeType = token;
+					continue;
+				}
+				mimeType = "text/plain";
+				encoding = "US-ASCII";
+			}
+			final int equal = token.indexOf('=');
+			if (equal != -1) {
+				if (token.substring(0, equal).equalsIgnoreCase("charset")) {
+					encoding = token.substring(equal + 1);
+				}
+			} else if (token.equalsIgnoreCase("base64")) {
+				base64 = true;
+			}
 		}
+		final String dataStr = spec.substring(comma + 1);
+		final byte[] data;
+		if (base64) {
+			// If base64 is further URL encoded, prevent + from being replaced by space
+			final byte[] bytes = dataStr.indexOf('%') != -1
+					? decodeUrl(dataStr.replace("+", "%2B").getBytes(StandardCharsets.ISO_8859_1))
+					: dataStr.getBytes(StandardCharsets.ISO_8859_1);
+			try {
+				data = Base64.getMimeDecoder().decode(bytes);
+			} catch (final IllegalArgumentException e) {
+				throw new IOException("Invalid base64 in data: scheme", e);
+			}
+		} else {
+			data = decodeUrl(dataStr.getBytes(StandardCharsets.ISO_8859_1));
+		}
+		this.mimeType = mimeType;
+		this.encoding = encoding;
+		this.data = data;
+		this.parsed = true;
 	}
 
 	/**
