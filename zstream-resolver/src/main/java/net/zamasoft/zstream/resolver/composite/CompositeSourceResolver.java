@@ -36,8 +36,7 @@ public class CompositeSourceResolver implements SourceResolver {
 	 * most common URI schemes:
 	 * <ul>
 	 *   <li>{@code file} — local file system via {@link FileSourceResolver}</li>
-	 *   <li>{@code http} / {@code https} — HTTP(S) via {@link HTTPSourceResolver}
-	 *       (silently skipped if the HTTP client library is unavailable)</li>
+	 *   <li>{@code http} / {@code https} — HTTP(S) via {@link HTTPSourceResolver}</li>
 	 *   <li>{@code data} — inline RFC 2397 data URIs via
 	 *       {@link DataSourceResolver}</li>
 	 * </ul>
@@ -48,13 +47,9 @@ public class CompositeSourceResolver implements SourceResolver {
 	public static CompositeSourceResolver createGenericCompositeSourceResolver() {
 		CompositeSourceResolver resolver = new CompositeSourceResolver();
 		resolver.addSourceResolver("file", new FileSourceResolver());
-		try {
-			HTTPSourceResolver httpSourceResolver = new HTTPSourceResolver();
-			resolver.addSourceResolver("http", httpSourceResolver);
-			resolver.addSourceResolver("https", httpSourceResolver);
-		} catch (Throwable e) {
-			// ignore
-		}
+		final HTTPSourceResolver httpSourceResolver = new HTTPSourceResolver();
+		resolver.addSourceResolver("http", httpSourceResolver);
+		resolver.addSourceResolver("https", httpSourceResolver);
 		resolver.addSourceResolver("data", new DataSourceResolver());
 		return resolver;
 	}
