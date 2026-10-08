@@ -334,6 +334,16 @@
     "en": "Appends a value to the end of the list.\n\n@param value value to append.",
     "ja": "リストの末尾に値を追加します。\n\n@param value 追加する値。"
   },
+  "net.zamasoft.zstream.io.util.IntList#array": {
+    "hash": "1925576c270d767f",
+    "en": "Internal array storage.",
+    "ja": "内部の配列の記憶域です。"
+  },
+  "net.zamasoft.zstream.io.util.IntList#defaultValue": {
+    "hash": "e3683ec2e0fe34d8",
+    "en": "Default value for unset positions.",
+    "ja": "設定していない位置の既定値です。"
+  },
   "net.zamasoft.zstream.io.util.IntList#get(int)": {
     "hash": "f30b19663a5a383a",
     "en": "Gets the value at the specified position.\n\n@param i position (0-indexed).\n@return value at the position, or default value if out of bounds.",
@@ -343,6 +353,11 @@
     "hash": "e47487ebb58524cb",
     "en": "Checks if the list is empty.\n\n@return true if the list has no elements.",
     "ja": "リストが空かどうかを調べます。\n\n@return リストに要素がない場合はtrue。"
+  },
+  "net.zamasoft.zstream.io.util.IntList#length": {
+    "hash": "bacb4d36d6b3adba",
+    "en": "Current logical length of the list.",
+    "ja": "リストの現在の論理的な長さです。"
   },
   "net.zamasoft.zstream.io.util.IntList#pack()": {
     "hash": "c79dd80dc41a490a",
