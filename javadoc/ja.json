@@ -1,2 +1,1477 @@
 {
+  "net.zamasoft.zstream.io.FragmentedOutput": {
+    "hash": "5273d4059d8aa5b7",
+    "en": "<p>\nInterface for building fragmented data.\n</p>\n\n<p>\nA new fragment is added using addFragment or insertFragmentBefore.\nFragments are assigned IDs 0, 1, 2, 3... in the order they are created.\nThe ID can be used to identify fragment when inserting a fragment or adding\ndata to a fragment.\n</p>\n\n<p>\nIf an instance implements the SequentialOutput interface, it indicates that\nthe data is\nsequential by nature and there is no need to use insertFragmentBefore.\nIn this case, data can be built efficiently by calling methods of the\nSequentialOutput interface without calling addFragment.\n</p>\n\n@author MIYABE Tatsuhiko\n@since 1.0",
+    "ja": "<p>\nフラグメント化されたデータを構築するためのインターフェースです。\n</p>\n\n<p>\n新しいフラグメントはaddFragmentまたはinsertFragmentBeforeで追加します。\nフラグメントには作成された順に0, 1, 2, 3...のIDが割り当てられます。\nこのIDは、フラグメントを挿入するときやフラグメントにデータを追加するときに、\nフラグメントを識別するために使います。\n</p>\n\n<p>\nインスタンスがSequentialOutputインターフェースを実装している場合は、\nデータが本来順次的なもので、insertFragmentBeforeを使う必要がないことを示します。\nこの場合は、addFragmentを呼ばずにSequentialOutputインターフェースのメソッドを\n呼び出すことで、データを効率よく構築できます。\n</p>\n\n@author MIYABE Tatsuhiko\n@since 1.0"
+  },
+  "net.zamasoft.zstream.io.FragmentedOutput#addFragment()": {
+    "hash": "6888a9b4c5e8edfe",
+    "en": "Adds a fragment to the end.\n\n@throws IOException if an I/O error occurs.",
+    "ja": "末尾にフラグメントを追加します。\n\n@throws IOException 入出力エラーが発生した場合。"
+  },
+  "net.zamasoft.zstream.io.FragmentedOutput#close()": {
+    "hash": "9bbc24737c61750e",
+    "en": "Closes this output and releases any underlying resources.\n\n@throws IOException if an I/O error occurs during close.",
+    "ja": "この出力を閉じ、下位のリソースを解放します。\n\n@throws IOException クローズ中に入出力エラーが発生した場合。"
+  },
+  "net.zamasoft.zstream.io.FragmentedOutput#finishFragment(int)": {
+    "hash": "9197852d930bfa06",
+    "en": "Finishes writing to a fragment. This call is not mandatory,\nbut it may optimize data construction.\n\n@param id fragment ID.\n@throws IOException if an I/O error occurs.",
+    "ja": "フラグメントへの書き込みを終了します。この呼び出しは必須ではありませんが、\nデータの構築が最適化される場合があります。\n\n@param id フラグメントID。\n@throws IOException 入出力エラーが発生した場合。"
+  },
+  "net.zamasoft.zstream.io.FragmentedOutput#getPositionInfo()": {
+    "hash": "68b6f7ca22f7474a",
+    "en": "Returns an object to get the start position of each fragment being built.\n\n@return position information.\n@throws UnsupportedOperationException if position information is not\n                                      supported.",
+    "ja": "構築中の各フラグメントの開始位置を取得するためのオブジェクトを返します。\n\n@return 位置情報。\n@throws UnsupportedOperationException 位置情報をサポートしていない場合。"
+  },
+  "net.zamasoft.zstream.io.FragmentedOutput#insertFragmentBefore(int)": {
+    "hash": "7c6780316f6fd55e",
+    "en": "Inserts a fragment immediately before the specified fragment.\n\n@param anchorId anchor fragment ID.\n@throws IOException if an I/O error occurs.",
+    "ja": "指定したフラグメントの直前にフラグメントを挿入します。\n\n@param anchorId 基準となるフラグメントのID。\n@throws IOException 入出力エラーが発生した場合。"
+  },
+  "net.zamasoft.zstream.io.FragmentedOutput#patch(int,long,byte[],int,int)": {
+    "hash": "dbfbf3c04ff05721",
+    "en": "Patches (overwrites) data in an already-written region of a fragment.\n<p>\nNot all implementations support patching. The default implementation\nthrows {@link UnsupportedOperationException}; subclasses that support\nrandom-access writes should override this method.\n</p>\n\n@param id             fragment ID.\n@param fragmentOffset byte offset within the fragment at which to start overwriting.\n@param b              byte array containing the replacement data.\n@param off            start position in {@code b}.\n@param len            number of bytes to overwrite.\n@throws IOException                   if an I/O error occurs.\n@throws UnsupportedOperationException if this implementation does not support patching.",
+    "ja": "フラグメントの書き込み済みの領域のデータにパッチを当てます(上書きします)。\n<p>\nすべての実装がパッチをサポートしているわけではありません。デフォルトの実装は\n{@link UnsupportedOperationException}をスローします。ランダムアクセスでの書き込みを\nサポートするサブクラスは、このメソッドをオーバーライドしてください。\n</p>\n\n@param id             フラグメントID。\n@param fragmentOffset 上書きを開始する、フラグメント内のバイトオフセット。\n@param b              置き換えるデータを含むバイト配列。\n@param off            {@code b}内の開始位置。\n@param len            上書きするバイト数。\n@throws IOException                   入出力エラーが発生した場合。\n@throws UnsupportedOperationException この実装がパッチをサポートしていない場合。"
+  },
+  "net.zamasoft.zstream.io.FragmentedOutput#supportsPositionInfo()": {
+    "hash": "6700ab3d0f725c24",
+    "en": "Returns whether position information is supported.\n\n@return true if position information is supported.",
+    "ja": "位置情報をサポートしているかどうかを返します。\n\n@return 位置情報をサポートしている場合はtrue。"
+  },
+  "net.zamasoft.zstream.io.FragmentedOutput#write(int,byte[],int,int)": {
+    "hash": "85261a2f9221cea4",
+    "en": "Adds data to a fragment.\n\n@param id  fragment ID.\n@param b   byte array.\n@param off start position in the byte array.\n@param len length of data in the byte array.\n@throws IOException if an I/O error occurs.",
+    "ja": "フラグメントにデータを追加します。\n\n@param id  フラグメントID。\n@param b   バイト配列。\n@param off バイト配列内の開始位置。\n@param len バイト配列内のデータの長さ。\n@throws IOException 入出力エラーが発生した場合。"
+  },
+  "net.zamasoft.zstream.io.FragmentedOutput.PositionInfo": {
+    "hash": "a6bde3a6c44b0352",
+    "en": "Position information for fragments.",
+    "ja": "フラグメントの位置情報です。"
+  },
+  "net.zamasoft.zstream.io.FragmentedOutput.PositionInfo#getPosition(int)": {
+    "hash": "bc187d95ae93a62b",
+    "en": "<p>\nReturns the start position of the fragment.\n</p>\n<p>\nThis is the value at the time getPositionInfo was called,\nand subsequent operations on the builder do not affect it.\n</p>\n\n@param id fragment ID.\n@return start position of the fragment.",
+    "ja": "<p>\nフラグメントの開始位置を返します。\n</p>\n<p>\nこれはgetPositionInfoが呼ばれた時点の値で、\nその後のビルダーへの操作の影響を受けません。\n</p>\n\n@param id フラグメントID。\n@return フラグメントの開始位置。"
+  },
+  "net.zamasoft.zstream.io.SequentialOutput": {
+    "hash": "20edd5e9df127061",
+    "en": "Sequential data output. An implementation of this interface does not\nnecessarily require adding fragments manually.\n\n@author MIYABE Tatsuhiko\n@since 1.0",
+    "ja": "順次的なデータの出力です。このインターフェースの実装では、\n必ずしも手動でフラグメントを追加する必要はありません。\n\n@author MIYABE Tatsuhiko\n@since 1.0"
+  },
+  "net.zamasoft.zstream.io.SequentialOutput#write(byte[],int,int)": {
+    "hash": "ff1691f0715938e8",
+    "en": "Adds data.\n\n@param b   byte array.\n@param off start position in the byte array.\n@param len length of data in the byte array.\n@throws IOException if an I/O error occurs.",
+    "ja": "データを追加します。\n\n@param b   バイト配列。\n@param off バイト配列内の開始位置。\n@param len バイト配列内のデータの長さ。\n@throws IOException 入出力エラーが発生した場合。"
+  },
+  "net.zamasoft.zstream.io.impl.AbstractTempFileOutput": {
+    "hash": "42a6d929943ae58e",
+    "en": "High-performance base implementation of {@link FragmentedOutput}.\n<p>\nData is buffered in fixed-size memory chunks and automatically spilled to a\ntemporary file when the configured global memory limit is reached. The spill\nstrategy evicts the fragment that currently occupies the most memory, keeping\nworking-set memory low while preserving fast random-access writes via\n{@link FileChannel}.\n</p>\n<p>\nSubclasses must implement the final assembly step by calling\n{@link #finish(OutputStream)} to stream all fragments in their logical order\nto an output stream.\n</p>\n\n@author MIYABE Tatsuhiko\n@since 1.2",
+    "ja": "{@link FragmentedOutput}の高性能な基底実装です。\n<p>\nデータは固定サイズのメモリ上のチャンクにバッファされ、設定した全体のメモリ上限に達すると\n自動的に一時ファイルへ退避されます。退避の戦略は、その時点で最も多くのメモリを占めている\nフラグメントを追い出すもので、作業中のメモリ使用量を低く抑えつつ、{@link FileChannel}による\n高速なランダムアクセス書き込みを保ちます。\n</p>\n<p>\nサブクラスは、{@link #finish(OutputStream)}を呼び出して全フラグメントを論理的な順序で\n出力ストリームへ流す、最後の組み立ての段階を実装する必要があります。\n</p>\n\n@author MIYABE Tatsuhiko\n@since 1.2"
+  },
+  "net.zamasoft.zstream.io.impl.AbstractTempFileOutput#AbstractTempFileOutput()": {
+    "hash": "d6003fd4245dca8c",
+    "en": "Creates a new instance with the default configuration.\n\n@see Config#DEFAULT",
+    "ja": "デフォルトの設定で新しいインスタンスを作成します。\n\n@see Config#DEFAULT"
+  },
+  "net.zamasoft.zstream.io.impl.AbstractTempFileOutput#AbstractTempFileOutput(int,int,int)": {
+    "hash": "afa38133a6449216",
+    "en": "@deprecated Use {@link #AbstractTempFileOutput(Config)} instead.\n            This constructor existed before the {@link Config} class was\n            introduced and the {@code threshold} parameter is ignored.",
+    "ja": "@deprecated 代わりに{@link #AbstractTempFileOutput(Config)}を使ってください。\n            このコンストラクタは{@link Config}クラスが導入される前からあったもので、\n            {@code threshold}引数は無視されます。"
+  },
+  "net.zamasoft.zstream.io.impl.AbstractTempFileOutput#finish(OutputStream)": {
+    "hash": "a4d019ec6d7ec78c",
+    "en": "Writes all fragments to {@code out} in their logical order, then releases\nall resources.\n<p>\nThis method is intended to be called by subclass {@code close()} methods.\nAfter it returns, the instance must not be used further.\n</p>\n\n@param out destination stream\n@throws IOException if an I/O error occurs",
+    "ja": "全フラグメントを論理的な順序で{@code out}へ書き出し、その後すべてのリソースを\n解放します。\n<p>\nこのメソッドはサブクラスの{@code close()}メソッドから呼ばれることを想定しています。\nこのメソッドから戻った後は、インスタンスを使ってはいけません。\n</p>\n\n@param out 書き出し先のストリーム\n@throws IOException 入出力エラーが発生した場合"
+  },
+  "net.zamasoft.zstream.io.impl.AbstractTempFileOutput#getLength()": {
+    "hash": "eb2de2a26d8874c4",
+    "en": "Returns the total number of bytes written across all fragments.\n\n@return total byte count",
+    "ja": "全フラグメントに書き込まれた総バイト数を返します。\n\n@return 総バイト数"
+  },
+  "net.zamasoft.zstream.io.impl.AbstractTempFileOutput#getSpillCount()": {
+    "hash": "00f1d5133b064240",
+    "en": "Returns how many times a block of in-memory chunks has been written out to\nthe temporary file. Diagnostics only; the counter is cumulative and is not\nreset when the instance is closed.\n\n@return number of spill writes performed so far\n@since 1.2",
+    "ja": "メモリ上のチャンクのまとまりを一時ファイルへ書き出した回数を返します。\n診断専用です。カウンタは累積で、インスタンスを閉じてもリセットされません。\n\n@return これまでに行った退避の書き込み回数\n@since 1.2"
+  },
+  "net.zamasoft.zstream.io.impl.AbstractTempFileOutput#getSpilledBytes()": {
+    "hash": "d39eb754ae5f89b3",
+    "en": "Returns the total number of bytes written to the temporary file.\nDiagnostics only; the counter is cumulative and is not reset when the\ninstance is closed.\n\n@return number of bytes spilled to disk so far\n@since 1.2",
+    "ja": "一時ファイルへ書き込まれた総バイト数を返します。\n診断専用です。カウンタは累積で、インスタンスを閉じてもリセットされません。\n\n@return これまでにディスクへ退避したバイト数\n@since 1.2"
+  },
+  "net.zamasoft.zstream.io.impl.AbstractTempFileOutput#replaceBytes(byte[])": {
+    "hash": "4631b7aaf8e817df",
+    "en": "Replaces the current fragment set with a single fragment containing\n{@code bytes}. This is useful when a higher layer needs to rebuild the final\nserialized form after using fragments for intermediate layout calculations.\n\n@param bytes replacement output bytes\n@throws IOException if an I/O error occurs while resetting fragment storage",
+    "ja": "現在のフラグメントの集合を、{@code bytes}を内容とする1つのフラグメントで置き換えます。\nフラグメントを中間的なレイアウト計算に使った後で、上位の層が最終的なシリアライズ形式を\n組み立て直す必要がある場合に便利です。\n\n@param bytes 置き換える出力のバイト列\n@throws IOException フラグメントの格納領域をリセットする間に入出力エラーが発生した場合"
+  },
+  "net.zamasoft.zstream.io.impl.AbstractTempFileOutput#snapshotBytes()": {
+    "hash": "92ce96b14c972c92",
+    "en": "Returns the current logical output as a contiguous byte array without\nconsuming the fragments.\n\n@return snapshot of the assembled fragment contents\n@throws IOException if an I/O error occurs while copying spilled chunks",
+    "ja": "フラグメントを消費せずに、現在の論理的な出力を連続したバイト配列として返します。\n\n@return 組み立てたフラグメントの内容のスナップショット\n@throws IOException 退避したチャンクをコピーする間に入出力エラーが発生した場合"
+  },
+  "net.zamasoft.zstream.io.impl.AbstractTempFileOutput.Config": {
+    "hash": "3bf2a930e0395598",
+    "en": "Configuration for buffer management.\n<p>\n{@code maxMemory} is the amount of heap this instance may retain;\n{@code chunkSize} decides how much real data fits inside it, because every\nfragment occupies a whole chunk regardless of how few bytes it holds. See\n{@link #DEFAULT} for the measurements behind the defaults.\n</p>\n\n@param chunkSize maximum size of each memory chunk (e.g., 8KB).\n@param maxMemory maximum total memory to use before spilling to disk.",
+    "ja": "バッファ管理の設定です。\n<p>\n{@code maxMemory}はこのインスタンスが保持してよいヒープの量です。\n{@code chunkSize}はその中に実データがどれだけ収まるかを決めます。各フラグメントは、\n保持するバイト数がどれほど少なくてもチャンクを丸ごと1つ占めるからです。\nデフォルト値の根拠となった測定については{@link #DEFAULT}を参照してください。\n</p>\n\n@param chunkSize 各メモリチャンクの最大サイズ(例: 8KB)。\n@param maxMemory ディスクへ退避するまでに使うメモリの合計の最大値。"
+  },
+  "net.zamasoft.zstream.io.impl.AbstractTempFileOutput.Config#DEFAULT": {
+    "hash": "e73ab5b6bb3874d9",
+    "en": "Default configuration: 8KB chunks, 16MB max memory.\n<p>\nMeasured 2026-07-27 (JDK 21, Windows 11, NVMe temp dir) with\n{@code TempFileOutputBenchmark} in {@code src/test}; 7-11 timed\nrepetitions per point, 95% confidence intervals typically +/-3..8%.\nThe grid covered chunkSize 4KB..1MB x maxMemory 1MB..256MB x payload\n64KB..256MB, over four access patterns including the one pdfg2d\nactually produces (a main flow plus two tiny fragments per object,\ncreated by {@code PDFFragmentOutputImpl.forkFragment()}).\n</p>\n<p>\n<b>maxMemory is the heap cost, exactly.</b> Retained heap was measured\nas {@code min(demand, maxMemory)} in every configuration, and with four\nconcurrent instances it was 4 x maxMemory (261MB retained at 64MB each).\nThe old 64MB therefore consumed about half of the ~128MB per-conversion\nbudget of the HTML-to-PDF engine, per instance; 16MB is ~12%.\n</p>\n<p>\n<b>chunkSize sets how much real data fits in that budget.</b> Every\nfragment holds one whole chunk however few bytes it contains, so a\ndocument with F fragments needs {@code payload + F * chunkSize}. For the\npdfg2d pattern F is about payload/4KB, so 64KB chunks needed ~17x the\npayload in RAM (1MB of PDF retained 17MB) while 8KB chunks need ~3x\n(1MB retained 3MB). 8KB also matches {@code PDFWriterImpl.BUFFER_SIZE},\nso a caller's write lands in exactly one chunk.\n</p>\n<p>\nThroughput, 8KB/16MB vs the previous 64KB/64MB (MB/s, mean +/- 95% CI):\n</p>\n<pre>\npayload   pattern      64KB/64MB        8KB/16MB       retained heap\n64KB      fork          851 +/-  49     3251 +/- 189    1MB  -&gt; 554KB\n1MB       fork          724 +/-  39     3815 +/- 199   17MB  -&gt;   3MB\n16MB      fork          172 +/-   6      257 +/-  14   65MB  -&gt;  17MB\n256MB     fork          286 +/-  11       59 +/-  15   67MB  -&gt;  20MB\n16MB      interleave   3444 +/- 306    11943 +/- 1033  66MB  -&gt;  16MB\n16MB      sequential  13684 +/- 558    15412 +/- 1106  16MB  -&gt;  16MB\n256MB     sequential   1033 +/- 269      626 +/-  82   66MB  -&gt;  16MB\n</pre>\n<p>\n<b>Where the trade-off turns.</b> The grid above jumps from 16MB to\n256MB, so that gap was re-measured (phase {@code cliff}, same day).\nAny output larger than {@code maxMemory} must spill, so cutting 64MB to\n16MB lowers the spill threshold - and what that costs depends entirely\non the access pattern (MB/s):\n</p>\n<pre>\npayload   SEQ 64K/64M   SEQ 8K/16M    FORK 64K/64M   FORK 8K/16M\n 16MB        13508         15478           143            183\n 32MB        14712          1270 (!)        72             80\n 64MB        14446           915 (!)        64             53\n128MB         1592           886           121             64\n256MB         1255           692           205             56\n</pre>\n<p>\nSEQ collapses by 11-16x at 32-64MB - exactly the range the old 64MB\nbuffer used to hold entirely in RAM. <b>That pattern is not what the PDF\nwriter produces</b>: {@code PDFFragmentOutputImpl.forkFragment()} is\ncalled once per stream-length backpatch and three times per page, so\nreal output is FORK, where the new default wins up to 32MB and loses\n1.2x at 64MB, 1.9x at 128MB, 3.6x at 256MB - a few seconds of I/O\ninside a conversion that takes minutes at those sizes. (FORK intervals\nare wide, +/-15..28%, so the 32-64MB differences are within noise; only\nthe 128MB and 256MB losses are outside it.)\n</p>\n<p>\n<b>Real outputs sit below the turn.</b> A 100,000-row Japanese table\n(13.8MB of HTML, 35s to convert) produces a <b>10.6MB</b> PDF (measured\n2026-07-27) - inside the range where the new default is both faster and\n4x smaller in heap. A caller that knowingly produces much larger output,\nor that appends one fragment sequentially, should pass its own\n{@link Config} with a larger {@code maxMemory}.\n</p>\n<p>\nA fixed byte count was chosen over a fraction of\n{@link Runtime#maxMemory()} deliberately: the measurement above shows\nretention scales with the number of concurrent instances, which this\nclass cannot see. A \"10% of the heap\" rule would hand 10% to each of N\nconcurrent conversions and overshoot the heap by a factor of N.\n</p>",
+    "ja": "デフォルトの設定です(チャンク8KB、最大メモリ16MB)。\n<p>\n2026-07-27に{@code src/test}の{@code TempFileOutputBenchmark}で測定しました(JDK 21、Windows 11、\n一時ディレクトリはNVMe)。各点で7〜11回の計時を繰り返し、95%信頼区間はおおむね+/-3..8%です。\n測定の格子はchunkSize 4KB..1MB x maxMemory 1MB..256MB x ペイロード64KB..256MBで、\npdfg2dが実際に生成するパターン(主の流れに加えて、オブジェクトごとに2つの小さなフラグメントを\n{@code PDFFragmentOutputImpl.forkFragment()}で作るもの)を含む4つのアクセスパターンにわたります。\n</p>\n<p>\n<b>maxMemoryがそのままヒープの消費量です。</b>保持されたヒープはすべての構成で\n{@code min(demand, maxMemory)}と測定され、4つのインスタンスを並行させると4 x maxMemoryでした\n(各64MBで261MBを保持)。したがって以前の64MBは、HTMLからPDFへの変換エンジンの、変換1回あたり\n約128MBの予算のおよそ半分を、インスタンス1つで消費していました。16MBなら約12%です。\n</p>\n<p>\n<b>chunkSizeは、その予算にどれだけ実データが収まるかを決めます。</b>各フラグメントは、\n保持するバイト数がどれほど少なくてもチャンクを丸ごと1つ持つため、F個のフラグメントを持つ\n文書には{@code payload + F * chunkSize}が必要です。pdfg2dのパターンではFはおよそpayload/4KBなので、\n64KBのチャンクではペイロードの約17倍のRAMが必要でした(1MBのPDFで17MBを保持)が、\n8KBのチャンクなら約3倍で済みます(1MBで3MBを保持)。8KBは{@code PDFWriterImpl.BUFFER_SIZE}とも\n一致するため、呼び出し側の1回の書き込みはちょうど1つのチャンクに収まります。\n</p>\n<p>\n8KB/16MBと以前の64KB/64MBのスループットの比較(MB/s、平均+/-95%信頼区間):\n</p>\n<pre>\npayload   pattern      64KB/64MB        8KB/16MB       retained heap\n64KB      fork          851 +/-  49     3251 +/- 189    1MB  -&gt; 554KB\n1MB       fork          724 +/-  39     3815 +/- 199   17MB  -&gt;   3MB\n16MB      fork          172 +/-   6      257 +/-  14   65MB  -&gt;  17MB\n256MB     fork          286 +/-  11       59 +/-  15   67MB  -&gt;  20MB\n16MB      interleave   3444 +/- 306    11943 +/- 1033  66MB  -&gt;  16MB\n16MB      sequential  13684 +/- 558    15412 +/- 1106  16MB  -&gt;  16MB\n256MB     sequential   1033 +/- 269      626 +/-  82   66MB  -&gt;  16MB\n</pre>\n<p>\n<b>トレードオフが逆転するところ。</b>上の格子は16MBから256MBへ飛んでいるため、その間を\n測り直しました(同日、フェーズ{@code cliff})。\n{@code maxMemory}より大きな出力は必ず退避されるので、64MBを16MBに下げると退避の閾値が\n下がります。それによる損失はアクセスパターンに全面的に依存します(MB/s):\n</p>\n<pre>\npayload   SEQ 64K/64M   SEQ 8K/16M    FORK 64K/64M   FORK 8K/16M\n 16MB        13508         15478           143            183\n 32MB        14712          1270 (!)        72             80\n 64MB        14446           915 (!)        64             53\n128MB         1592           886           121             64\n256MB         1255           692           205             56\n</pre>\n<p>\nSEQは32〜64MBで11〜16倍に落ち込みます。これはちょうど、以前の64MBのバッファが全体をRAMに\n保持していた範囲です。<b>このパターンはPDFライターが生成するものではありません</b>。\n{@code PDFFragmentOutputImpl.forkFragment()}はストリーム長の後埋め(バックパッチ)1回ごとに1回、\nページごとに3回呼ばれるため、実際の出力はFORKです。FORKでは新しいデフォルトが32MBまでは勝ち、\n64MBで1.2倍、128MBで1.9倍、256MBで3.6倍負けます。これは、そのサイズでは数分かかる変換の中の\n数秒の入出力にすぎません。(FORKの区間は+/-15..28%と広いため、32〜64MBの差はノイズの範囲内です。\nノイズの範囲を超えているのは128MBと256MBでの負けだけです。)\n</p>\n<p>\n<b>実際の出力は逆転点より下にあります。</b>10万行の日本語の表(HTMLで13.8MB、変換に35秒)から\n生成されるPDFは<b>10.6MB</b>です(2026-07-27測定)。これは新しいデフォルトのほうが速く、しかも\nヒープも4分の1で済む範囲に収まります。これよりずっと大きな出力を生成することがわかっている\n呼び出し側や、1つのフラグメントへ順次追記する呼び出し側は、より大きな{@code maxMemory}を指定した\n独自の{@link Config}を渡してください。\n</p>\n<p>\n{@link Runtime#maxMemory()}に対する割合ではなく固定のバイト数を選んだのは意図的です。上の測定が\n示すとおり、保持量は並行するインスタンスの数に比例しますが、このクラスからはその数が見えません。\n「ヒープの10%」という規則では、N個の並行する変換のそれぞれに10%を割り当て、ヒープをN倍\n超過してしまいます。\n</p>"
+  },
+  "net.zamasoft.zstream.io.impl.AbstractTempFileOutput.Config#ON_MEMORY": {
+    "hash": "4d15134362b06c7f",
+    "en": "Configuration for purely in-memory processing.\n<p>\nThe chunk size matters more here than in {@link #DEFAULT}, not less:\nwith no memory cap the per-fragment chunk overhead is never reclaimed\nby a spill. Measured 2026-07-27, the same run as above, 1MB of payload\nover 257 fragments retained 17MB with 64KB chunks and 3MB with 8KB\nchunks, at 724 +/- 39 MB/s and 3815 +/- 199 MB/s respectively - so the\nprevious 64KB was worse on both axes and was changed to match\n{@link #DEFAULT}.\n</p>",
+    "ja": "メモリ上だけで処理するための設定です。\n<p>\nここではチャンクサイズは{@link #DEFAULT}の場合より重要でなくなるのではなく、むしろ重要になります。\nメモリの上限がないため、フラグメントごとのチャンクのオーバーヘッドが退避によって回収されることが\nないからです。2026-07-27の上と同じ測定では、257個のフラグメントにわたる1MBのペイロードが、\n64KBのチャンクでは17MB、8KBのチャンクでは3MBを保持し、速度はそれぞれ724 +/- 39 MB/sと\n3815 +/- 199 MB/sでした。つまり以前の64KBは両方の軸で劣っていたため、{@link #DEFAULT}に\n合わせて変更しました。\n</p>"
+  },
+  "net.zamasoft.zstream.io.impl.AbstractTempFileOutput.Fragment": {
+    "hash": "bd8be4b64352ea18",
+    "en": "A single logical fragment that accumulates data in a list of {@link Chunk}s.\n<p>\nFragments form a doubly-linked list ({@link #prev} / {@link #next}) that\ndefines their output order, which may differ from their creation order.\n</p>",
+    "ja": "データを{@link Chunk}のリストに蓄積する、1つの論理的なフラグメントです。\n<p>\nフラグメントは、出力順を定める双方向連結リスト({@link #prev} / {@link #next})を構成します。\n出力順は作成順と異なることがあります。\n</p>"
+  },
+  "net.zamasoft.zstream.io.impl.FileFragmentedOutput": {
+    "hash": "d8dca4949202d934",
+    "en": "Sequential output implementation that writes fragmented data to a file.\n<p>\nThis class extends {@link AbstractTempFileOutput} and implements\n{@link SequentialOutput} to provide file-based output for PDF generation.\n</p>\n<p>\nWhen used in sequential mode, data is written directly to the target file.\nWhen fragments are inserted out of order, data is buffered in memory or\na temporary file and assembled in the correct order when closed.\n</p>\n\n@author MIYABE Tatsuhiko\n@since 1.0",
+    "ja": "フラグメント化されたデータをファイルへ書き出す、順次出力の実装です。\n<p>\nこのクラスは{@link AbstractTempFileOutput}を継承し、{@link SequentialOutput}を実装して、\nPDF生成のためのファイルへの出力を提供します。\n</p>\n<p>\n順次モードで使う場合は、データは出力先のファイルへ直接書き込まれます。\nフラグメントが順序どおりでなく挿入された場合は、データはメモリまたは一時ファイルにバッファされ、\n閉じるときに正しい順序で組み立てられます。\n</p>\n\n@author MIYABE Tatsuhiko\n@since 1.0"
+  },
+  "net.zamasoft.zstream.io.impl.FileFragmentedOutput#FileFragmentedOutput(File)": {
+    "hash": "25a15ed3a950b0e2",
+    "en": "Creates a new file output with default buffer settings.\n\n@param file target output file.\n@see Config#DEFAULT",
+    "ja": "デフォルトのバッファ設定で新しいファイル出力を作成します。\n\n@param file 出力先のファイル。\n@see Config#DEFAULT"
+  },
+  "net.zamasoft.zstream.io.impl.FileFragmentedOutput#FileFragmentedOutput(File,Config)": {
+    "hash": "adbb240157a75d0d",
+    "en": "Creates a new file output with custom buffer settings.\n\n@param file   target output file.\n@param config buffer configuration.",
+    "ja": "独自のバッファ設定で新しいファイル出力を作成します。\n\n@param file   出力先のファイル。\n@param config バッファの設定。"
+  },
+  "net.zamasoft.zstream.io.impl.FileFragmentedOutput#close()": {
+    "hash": "51004edccdc70a58",
+    "en": "Closes the output and writes all data to the file.\n<p>\nIf sequential output was used, simply closes the stream.\nIf fragments were used, assembles them in order and writes to file.\n</p>\n\n@throws IOException if an I/O error occurs.",
+    "ja": "出力を閉じ、すべてのデータをファイルへ書き込みます。\n<p>\n順次出力を使った場合は、単にストリームを閉じます。\nフラグメントを使った場合は、それらを順に組み立ててファイルへ書き込みます。\n</p>\n\n@throws IOException 入出力エラーが発生した場合。"
+  },
+  "net.zamasoft.zstream.io.impl.FileFragmentedOutput#file": {
+    "hash": "7cd108ea840cfba8",
+    "en": "Target output file.",
+    "ja": "出力先のファイルです。"
+  },
+  "net.zamasoft.zstream.io.impl.FileFragmentedOutput#out": {
+    "hash": "1a8a60e68ac94455",
+    "en": "Direct output stream for sequential writes; null if using fragments.",
+    "ja": "順次書き込み用の直接の出力ストリームです。フラグメントを使う場合はnullです。"
+  },
+  "net.zamasoft.zstream.io.impl.FileFragmentedOutput#write(byte[],int,int)": {
+    "hash": "747f765ab0eeaaae",
+    "en": "Writes data directly to the output file.\n<p>\nThis method is used for sequential output mode. On first call,\ncreates the output stream to the target file.\n</p>\n\n@param b   byte array containing data.\n@param off start offset in the array.\n@param len number of bytes to write.\n@throws IOException if an I/O error occurs.",
+    "ja": "出力先のファイルへデータを直接書き込みます。\n<p>\nこのメソッドは順次出力モードで使われます。最初の呼び出しで、\n出力先のファイルへの出力ストリームを作成します。\n</p>\n\n@param b   データを含むバイト配列。\n@param off 配列内の開始オフセット。\n@param len 書き込むバイト数。\n@throws IOException 入出力エラーが発生した場合。"
+  },
+  "net.zamasoft.zstream.io.impl.NoOpFragmentedOutput": {
+    "hash": "aab40425602344cd",
+    "en": "A no-operation implementation of {@link FragmentedOutput}.\n<p>\nThis class implements the Null Object pattern, providing a safe\nimplementation that discards all data. Useful when output is\nnot needed but a FragmentedOutput instance is required.\n</p>\n<p>\nThis is a singleton class; use {@link #INSTANCE} to get the instance.\n</p>\n\n@author MIYABE Tatsuhiko\n@since 1.0",
+    "ja": "何もしない{@link FragmentedOutput}の実装です。\n<p>\nこのクラスはNull Objectパターンを実装しており、すべてのデータを破棄する安全な実装を提供します。\n出力は不要だがFragmentedOutputのインスタンスが必要な場合に便利です。\n</p>\n<p>\nこのクラスはシングルトンです。インスタンスは{@link #INSTANCE}で取得してください。\n</p>\n\n@author MIYABE Tatsuhiko\n@since 1.0"
+  },
+  "net.zamasoft.zstream.io.impl.NoOpFragmentedOutput#INSTANCE": {
+    "hash": "0650f7b34047b75d",
+    "en": "Singleton instance.",
+    "ja": "シングルトンのインスタンスです。"
+  },
+  "net.zamasoft.zstream.io.impl.NoOpFragmentedOutput#addFragment()": {
+    "hash": "695f9a47a74d140d",
+    "en": "No-op: does nothing.",
+    "ja": "何もしません。"
+  },
+  "net.zamasoft.zstream.io.impl.NoOpFragmentedOutput#close()": {
+    "hash": "695f9a47a74d140d",
+    "en": "No-op: does nothing.",
+    "ja": "何もしません。"
+  },
+  "net.zamasoft.zstream.io.impl.NoOpFragmentedOutput#finishFragment(int)": {
+    "hash": "96bb7adaf48de155",
+    "en": "No-op: does nothing.\n\n@param id ignored.",
+    "ja": "何もしません。\n\n@param id 無視されます。"
+  },
+  "net.zamasoft.zstream.io.impl.NoOpFragmentedOutput#getPositionInfo()": {
+    "hash": "4ecebb8339bf5336",
+    "en": "Returns a position info that always returns 0.\n\n@return position info returning 0 for all fragments.",
+    "ja": "常に0を返す位置情報を返します。\n\n@return すべてのフラグメントについて0を返す位置情報。"
+  },
+  "net.zamasoft.zstream.io.impl.NoOpFragmentedOutput#insertFragmentBefore(int)": {
+    "hash": "0820786004240a0c",
+    "en": "No-op: does nothing.\n\n@param anchorId ignored.",
+    "ja": "何もしません。\n\n@param anchorId 無視されます。"
+  },
+  "net.zamasoft.zstream.io.impl.NoOpFragmentedOutput#supportsPositionInfo()": {
+    "hash": "218f94e69f9e55d3",
+    "en": "Always returns true as position info is trivially supported.\n\n@return always true.",
+    "ja": "位置情報は自明にサポートできるため、常にtrueを返します。\n\n@return 常にtrue。"
+  },
+  "net.zamasoft.zstream.io.impl.NoOpFragmentedOutput#write(int,byte[],int,int)": {
+    "hash": "5ce1723b9e35d362",
+    "en": "No-op: discards all data.\n\n@param id  ignored.\n@param b   ignored.\n@param off ignored.\n@param len ignored.",
+    "ja": "何もしません。すべてのデータを破棄します。\n\n@param id  無視されます。\n@param b   無視されます。\n@param off 無視されます。\n@param len 無視されます。"
+  },
+  "net.zamasoft.zstream.io.impl.StreamFragmentedOutput": {
+    "hash": "980fbb8616cb0962",
+    "en": "Sequential output implementation that writes fragmented data to an\nOutputStream.\n<p>\nThis class extends {@link AbstractTempFileOutput} and implements\n{@link SequentialOutput} to provide stream-based output for PDF generation.\n</p>\n<p>\nWhen used in sequential mode, data is written directly to the target stream.\nWhen fragments are inserted out of order, data is buffered in memory or\na temporary file and assembled in the correct order when closed.\n</p>\n\n@author MIYABE Tatsuhiko\n@since 1.0",
+    "ja": "フラグメント化されたデータをOutputStreamへ書き出す、順次出力の実装です。\n<p>\nこのクラスは{@link AbstractTempFileOutput}を継承し、{@link SequentialOutput}を実装して、\nPDF生成のためのストリームへの出力を提供します。\n</p>\n<p>\n順次モードで使う場合は、データは出力先のストリームへ直接書き込まれます。\nフラグメントが順序どおりでなく挿入された場合は、データはメモリまたは一時ファイルにバッファされ、\n閉じるときに正しい順序で組み立てられます。\n</p>\n\n@author MIYABE Tatsuhiko\n@since 1.0"
+  },
+  "net.zamasoft.zstream.io.impl.StreamFragmentedOutput#StreamFragmentedOutput(OutputStream)": {
+    "hash": "e1797da6c601b5f3",
+    "en": "Creates a new stream output with default buffer settings.\n\n@param out target output stream.\n@see Config#DEFAULT",
+    "ja": "デフォルトのバッファ設定で新しいストリーム出力を作成します。\n\n@param out 出力先のストリーム。\n@see Config#DEFAULT"
+  },
+  "net.zamasoft.zstream.io.impl.StreamFragmentedOutput#StreamFragmentedOutput(OutputStream,Config)": {
+    "hash": "f44b84e8b72bb566",
+    "en": "Creates a new stream output with custom buffer settings.\n\n@param out    target output stream.\n@param config buffer configuration.",
+    "ja": "独自のバッファ設定で新しいストリーム出力を作成します。\n\n@param out    出力先のストリーム。\n@param config バッファの設定。"
+  },
+  "net.zamasoft.zstream.io.impl.StreamFragmentedOutput#close()": {
+    "hash": "43e30ba689785d8d",
+    "en": "Closes the output and writes all data to the stream.\n<p>\nAssembles all fragments in order, writes to the stream,\nand closes the underlying stream.\n</p>\n\n@throws IOException if an I/O error occurs.",
+    "ja": "出力を閉じ、すべてのデータをストリームへ書き込みます。\n<p>\nすべてのフラグメントを順に組み立ててストリームへ書き込み、\n下位のストリームを閉じます。\n</p>\n\n@throws IOException 入出力エラーが発生した場合。"
+  },
+  "net.zamasoft.zstream.io.impl.StreamFragmentedOutput#write(byte[],int,int)": {
+    "hash": "75348f3a440da35e",
+    "en": "Writes data directly to the output stream.\n<p>\nThis method is used for sequential output mode.\n</p>\n\n@param b   byte array containing data.\n@param off start offset in the array.\n@param len number of bytes to write.\n@throws IOException if an I/O error occurs.",
+    "ja": "出力先のストリームへデータを直接書き込みます。\n<p>\nこのメソッドは順次出力モードで使われます。\n</p>\n\n@param b   データを含むバイト配列。\n@param off 配列内の開始オフセット。\n@param len 書き込むバイト数。\n@throws IOException 入出力エラーが発生した場合。"
+  },
+  "net.zamasoft.zstream.io.util.FragmentOutputAdapter": {
+    "hash": "fbd0eb179492e69c",
+    "en": "An OutputStream adapter for writing to a specific fragment.\n<p>\nThis class allows code that expects an OutputStream to write data\nto a specific fragment of a {@link FragmentedOutput}. All write\noperations are directed to the fragment specified at construction.\n</p>\n<p>\nClosing this adapter calls {@link FragmentedOutput#finishFragment(int)}\nto signal that writing to this fragment is complete.\n</p>\n\n@author MIYABE Tatsuhiko\n@since 1.0",
+    "ja": "特定のフラグメントへ書き込むためのOutputStreamのアダプタです。\n<p>\nこのクラスを使うと、OutputStreamを前提とするコードから、{@link FragmentedOutput}の\n特定のフラグメントへデータを書き込めます。すべての書き込み操作は、\n構築時に指定したフラグメントへ向けられます。\n</p>\n<p>\nこのアダプタを閉じると{@link FragmentedOutput#finishFragment(int)}を呼び出し、\nこのフラグメントへの書き込みが完了したことを知らせます。\n</p>\n\n@author MIYABE Tatsuhiko\n@since 1.0"
+  },
+  "net.zamasoft.zstream.io.util.FragmentOutputAdapter#FragmentOutputAdapter(FragmentedOutput,int)": {
+    "hash": "b158b9a70c3054c9",
+    "en": "Creates a new adapter for the specified fragment.\n\n@param builder    target FragmentedOutput; must not be null.\n@param fragmentId target fragment ID.\n@throws NullPointerException if builder is null.",
+    "ja": "指定したフラグメントのための新しいアダプタを作成します。\n\n@param builder    書き込み先のFragmentedOutput。nullであってはなりません。\n@param fragmentId 書き込み先のフラグメントのID。\n@throws NullPointerException builderがnullの場合。"
+  },
+  "net.zamasoft.zstream.io.util.FragmentOutputAdapter#close()": {
+    "hash": "8846205dbf1387df",
+    "en": "Finishes writing to the fragment.\n<p>\nCalls {@link FragmentedOutput#finishFragment(int)} to signal completion.\n</p>\n\n@throws IOException if an I/O error occurs.",
+    "ja": "フラグメントへの書き込みを終了します。\n<p>\n{@link FragmentedOutput#finishFragment(int)}を呼び出して完了を知らせます。\n</p>\n\n@throws IOException 入出力エラーが発生した場合。"
+  },
+  "net.zamasoft.zstream.io.util.FragmentOutputAdapter#write(byte[])": {
+    "hash": "588d6389637bdf49",
+    "en": "Writes the entire byte array to the fragment.\n\n@param b the byte array.\n@throws IOException if an I/O error occurs.",
+    "ja": "バイト配列全体をフラグメントへ書き込みます。\n\n@param b バイト配列。\n@throws IOException 入出力エラーが発生した場合。"
+  },
+  "net.zamasoft.zstream.io.util.FragmentOutputAdapter#write(byte[],int,int)": {
+    "hash": "27dedddfc55f0e49",
+    "en": "Writes a portion of a byte array to the fragment.\n\n@param b   the byte array.\n@param off the start offset.\n@param len the number of bytes to write.\n@throws IOException if an I/O error occurs.",
+    "ja": "バイト配列の一部をフラグメントへ書き込みます。\n\n@param b   バイト配列。\n@param off 開始オフセット。\n@param len 書き込むバイト数。\n@throws IOException 入出力エラーが発生した場合。"
+  },
+  "net.zamasoft.zstream.io.util.FragmentOutputAdapter#write(int)": {
+    "hash": "47b490a2af866d9a",
+    "en": "Writes a single byte to the fragment.\n\n@param b the byte to write (only the lower 8 bits are used).\n@throws IOException if an I/O error occurs.",
+    "ja": "1バイトをフラグメントへ書き込みます。\n\n@param b 書き込むバイト(下位8ビットだけが使われます)。\n@throws IOException 入出力エラーが発生した場合。"
+  },
+  "net.zamasoft.zstream.io.util.FragmentedOutputWrapper": {
+    "hash": "ffd6b2f1b8b3da9e",
+    "en": "A wrapper that delegates all operations to another FragmentedOutput.\n<p>\nThis class implements the Decorator pattern, allowing subclasses to\nextend functionality (e.g., measuring size, tracking positions) while\ndelegating actual I/O to the wrapped instance.\n</p>\n\n@author MIYABE Tatsuhiko\n@since 1.0\n@see OutputMeasurer\n@see PositionTrackingOutput",
+    "ja": "すべての操作を別のFragmentedOutputへ委譲するラッパーです。\n<p>\nこのクラスはDecoratorパターンを実装しており、実際の入出力はラップしたインスタンスへ委譲しつつ、\nサブクラスで機能を拡張(サイズの測定、位置の追跡など)できるようにします。\n</p>\n\n@author MIYABE Tatsuhiko\n@since 1.0\n@see OutputMeasurer\n@see PositionTrackingOutput"
+  },
+  "net.zamasoft.zstream.io.util.FragmentedOutputWrapper#FragmentedOutputWrapper(FragmentedOutput)": {
+    "hash": "a081a652e49e555e",
+    "en": "Creates a new wrapper around the specified output.\n\n@param builder the FragmentedOutput to wrap.",
+    "ja": "指定した出力をラップする新しいラッパーを作成します。\n\n@param builder ラップするFragmentedOutput。"
+  },
+  "net.zamasoft.zstream.io.util.FragmentedOutputWrapper#addFragment()": {
+    "hash": "063cb0ba167992b4",
+    "en": "{@inheritDoc}",
+    "ja": "{@inheritDoc}"
+  },
+  "net.zamasoft.zstream.io.util.FragmentedOutputWrapper#builder": {
+    "hash": "99e309f0e5868a8d",
+    "en": "The wrapped FragmentedOutput instance.",
+    "ja": "ラップしているFragmentedOutputのインスタンスです。"
+  },
+  "net.zamasoft.zstream.io.util.FragmentedOutputWrapper#close()": {
+    "hash": "063cb0ba167992b4",
+    "en": "{@inheritDoc}",
+    "ja": "{@inheritDoc}"
+  },
+  "net.zamasoft.zstream.io.util.FragmentedOutputWrapper#finishFragment(int)": {
+    "hash": "063cb0ba167992b4",
+    "en": "{@inheritDoc}",
+    "ja": "{@inheritDoc}"
+  },
+  "net.zamasoft.zstream.io.util.FragmentedOutputWrapper#getPositionInfo()": {
+    "hash": "063cb0ba167992b4",
+    "en": "{@inheritDoc}",
+    "ja": "{@inheritDoc}"
+  },
+  "net.zamasoft.zstream.io.util.FragmentedOutputWrapper#insertFragmentBefore(int)": {
+    "hash": "063cb0ba167992b4",
+    "en": "{@inheritDoc}",
+    "ja": "{@inheritDoc}"
+  },
+  "net.zamasoft.zstream.io.util.FragmentedOutputWrapper#supportsPositionInfo()": {
+    "hash": "063cb0ba167992b4",
+    "en": "{@inheritDoc}",
+    "ja": "{@inheritDoc}"
+  },
+  "net.zamasoft.zstream.io.util.FragmentedOutputWrapper#write(int,byte[],int,int)": {
+    "hash": "063cb0ba167992b4",
+    "en": "{@inheritDoc}",
+    "ja": "{@inheritDoc}"
+  },
+  "net.zamasoft.zstream.io.util.IntList": {
+    "hash": "8b1fbbe7091a9ad0",
+    "en": "A dynamic list of primitive int values.\n<p>\nUnlike {@code ArrayList<Integer>}, this class stores primitive int values\ndirectly, avoiding boxing overhead. Values can be set at any position,\nand the list grows automatically.\n</p>\n<p>\nThis class is useful for tracking segment indices in file-based storage.\n</p>\n\n@author MIYABE Tatsuhiko\n@since 1.0",
+    "ja": "プリミティブのint値の可変長リストです。\n<p>\n{@code ArrayList<Integer>}と異なり、このクラスはプリミティブのint値を直接格納するため、\nボクシングのオーバーヘッドがありません。値は任意の位置に設定でき、\nリストは自動的に伸長します。\n</p>\n<p>\nこのクラスは、ファイルベースの格納でセグメントのインデックスを追跡するのに便利です。\n</p>\n\n@author MIYABE Tatsuhiko\n@since 1.0"
+  },
+  "net.zamasoft.zstream.io.util.IntList#IntList()": {
+    "hash": "1398a30ec21115ae",
+    "en": "Creates a new IntList with default value of 0.",
+    "ja": "デフォルト値を0として新しいIntListを作成します。"
+  },
+  "net.zamasoft.zstream.io.util.IntList#IntList(int)": {
+    "hash": "73f21b33f36f6278",
+    "en": "Creates a new IntList with the specified default value.\n\n@param defaultValue value returned for unset positions.",
+    "ja": "指定したデフォルト値で新しいIntListを作成します。\n\n@param defaultValue 設定されていない位置に対して返す値。"
+  },
+  "net.zamasoft.zstream.io.util.IntList#add(int)": {
+    "hash": "1ac38a5dd1a276fa",
+    "en": "Appends a value to the end of the list.\n\n@param value value to append.",
+    "ja": "リストの末尾に値を追加します。\n\n@param value 追加する値。"
+  },
+  "net.zamasoft.zstream.io.util.IntList#get(int)": {
+    "hash": "f30b19663a5a383a",
+    "en": "Gets the value at the specified position.\n\n@param i position (0-indexed).\n@return value at the position, or default value if out of bounds.",
+    "ja": "指定した位置の値を取得します。\n\n@param i 位置(0始まり)。\n@return その位置の値。範囲外の場合はデフォルト値。"
+  },
+  "net.zamasoft.zstream.io.util.IntList#isEmpty()": {
+    "hash": "e47487ebb58524cb",
+    "en": "Checks if the list is empty.\n\n@return true if the list has no elements.",
+    "ja": "リストが空かどうかを調べます。\n\n@return リストに要素がない場合はtrue。"
+  },
+  "net.zamasoft.zstream.io.util.IntList#pack()": {
+    "hash": "c79dd80dc41a490a",
+    "en": "Shrinks the internal array to match the logical length.\n<p>\nCall this to reduce memory usage after all values are set.\n</p>",
+    "ja": "内部の配列を論理的な長さに合わせて縮小します。\n<p>\nすべての値を設定した後でメモリ使用量を減らすために呼び出してください。\n</p>"
+  },
+  "net.zamasoft.zstream.io.util.IntList#set(int,int)": {
+    "hash": "28c11d5047cc979a",
+    "en": "Sets the value at the specified position.\n<p>\nIf the position is beyond the current length, the list expands.\nNew positions are filled with the default value.\n</p>\n\n@param pos   position (0-indexed).\n@param value value to set.",
+    "ja": "指定した位置に値を設定します。\n<p>\n位置が現在の長さを超える場合は、リストが伸長します。\n新しい位置はデフォルト値で埋められます。\n</p>\n\n@param pos   位置(0始まり)。\n@param value 設定する値。"
+  },
+  "net.zamasoft.zstream.io.util.IntList#size()": {
+    "hash": "0ede6c6ee5ec8108",
+    "en": "Returns the current logical size of the list.\n\n@return number of elements.",
+    "ja": "リストの現在の論理的なサイズを返します。\n\n@return 要素の数。"
+  },
+  "net.zamasoft.zstream.io.util.IntList#toArray()": {
+    "hash": "36288cb6a5d64b0d",
+    "en": "Returns the internal array after packing.\n<p>\nThe returned array has exactly the same length as the list.\n</p>\n\n@return packed array of values.",
+    "ja": "縮小した後の内部の配列を返します。\n<p>\n返される配列の長さはリストの長さとちょうど同じです。\n</p>\n\n@return 縮小済みの値の配列。"
+  },
+  "net.zamasoft.zstream.io.util.OutputMeasurer": {
+    "hash": "acf69895f9ad8904",
+    "en": "A wrapper that measures the total size of data being written.\n<p>\nThis class extends {@link FragmentedOutputWrapper} to track the total\nnumber of bytes written across all fragments. Useful for calculating\ncontent sizes before finalizing output.\n</p>\n\n@author MIYABE Tatsuhiko\n@since 1.0",
+    "ja": "書き込まれるデータの合計サイズを測定するラッパーです。\n<p>\nこのクラスは{@link FragmentedOutputWrapper}を継承し、全フラグメントにわたって\n書き込まれた総バイト数を追跡します。出力を確定する前に内容のサイズを計算するのに便利です。\n</p>\n\n@author MIYABE Tatsuhiko\n@since 1.0"
+  },
+  "net.zamasoft.zstream.io.util.OutputMeasurer#OutputMeasurer(FragmentedOutput)": {
+    "hash": "86bdf8de8cc183c5",
+    "en": "Creates a new measurer wrapping the specified output.\n\n@param builder the FragmentedOutput to wrap.",
+    "ja": "指定した出力をラップする新しい測定器を作成します。\n\n@param builder ラップするFragmentedOutput。"
+  },
+  "net.zamasoft.zstream.io.util.OutputMeasurer#getLength()": {
+    "hash": "ed9fec1f3eb873b2",
+    "en": "Returns the total size of all written data.\n\n@return total bytes written.",
+    "ja": "書き込まれたすべてのデータの合計サイズを返します。\n\n@return 書き込まれた総バイト数。"
+  },
+  "net.zamasoft.zstream.io.util.OutputMeasurer#length": {
+    "hash": "0e2173a17af408d3",
+    "en": "Accumulated length of all written data.",
+    "ja": "書き込まれたすべてのデータの累積の長さです。"
+  },
+  "net.zamasoft.zstream.io.util.OutputMeasurer#write(int,byte[],int,int)": {
+    "hash": "55bfcf6343f0d53e",
+    "en": "Writes data to the fragment and accumulates the length.\n\n@param id  fragment ID.\n@param b   byte array.\n@param off start offset.\n@param len number of bytes to write.\n@throws IOException if an I/O error occurs.",
+    "ja": "フラグメントへデータを書き込み、長さを累積します。\n\n@param id  フラグメントID。\n@param b   バイト配列。\n@param off 開始オフセット。\n@param len 書き込むバイト数。\n@throws IOException 入出力エラーが発生した場合。"
+  },
+  "net.zamasoft.zstream.io.util.PositionTrackingOutput": {
+    "hash": "b54837a54753b7b4",
+    "en": "A wrapper that adds position tracking support to any FragmentedOutput.\n<p>\nUse this class to wrap implementations that don't support position info\nnatively. It maintains its own linked list of fragments to calculate\npositions when {@link #getPositionInfo()} is called.\n</p>\n<p>\nAfter wrapping, {@link #supportsPositionInfo()} will return true.\n</p>\n\n@author MIYABE Tatsuhiko\n@since 1.0",
+    "ja": "任意のFragmentedOutputに位置の追跡のサポートを加えるラッパーです。\n<p>\n位置情報をそれ自体ではサポートしない実装をラップするのに使います。{@link #getPositionInfo()}が\n呼ばれたときに位置を計算するため、独自のフラグメントの連結リストを保持します。\n</p>\n<p>\nラップした後は、{@link #supportsPositionInfo()}はtrueを返します。\n</p>\n\n@author MIYABE Tatsuhiko\n@since 1.0"
+  },
+  "net.zamasoft.zstream.io.util.PositionTrackingOutput#PositionTrackingOutput(FragmentedOutput)": {
+    "hash": "8d03537699cceebe",
+    "en": "Creates a new position tracking wrapper.\n<p>\nThe wrapped builder should not already support position info;\nthis is verified with an assertion.\n</p>\n\n@param builder the FragmentedOutput to wrap.",
+    "ja": "新しい位置追跡ラッパーを作成します。\n<p>\nラップするビルダーは、まだ位置情報をサポートしていないものでなければなりません。\nこれはアサーションで検証されます。\n</p>\n\n@param builder ラップするFragmentedOutput。"
+  },
+  "net.zamasoft.zstream.io.util.PositionTrackingOutput#addFragment()": {
+    "hash": "ed3929814e946cb0",
+    "en": "{@inheritDoc}\n<p>\nCreates a new fragment and appends it to the tracking list.\n</p>",
+    "ja": "{@inheritDoc}\n<p>\n新しいフラグメントを作成し、追跡用のリストの末尾に追加します。\n</p>"
+  },
+  "net.zamasoft.zstream.io.util.PositionTrackingOutput#close()": {
+    "hash": "996e53f8b6e5d12a",
+    "en": "{@inheritDoc}\n<p>\nClears tracking data and closes the wrapped output.\n</p>",
+    "ja": "{@inheritDoc}\n<p>\n追跡用のデータを消去し、ラップしている出力を閉じます。\n</p>"
+  },
+  "net.zamasoft.zstream.io.util.PositionTrackingOutput#finishFragment(int)": {
+    "hash": "063cb0ba167992b4",
+    "en": "{@inheritDoc}",
+    "ja": "{@inheritDoc}"
+  },
+  "net.zamasoft.zstream.io.util.PositionTrackingOutput#getFragment(int)": {
+    "hash": "b6fd259e7a0ff4de",
+    "en": "Retrieves fragment info by ID.\n\n@param id fragment ID.\n@return fragment info.",
+    "ja": "IDでフラグメントの情報を取得します。\n\n@param id フラグメントID。\n@return フラグメントの情報。"
+  },
+  "net.zamasoft.zstream.io.util.PositionTrackingOutput#getPositionInfo()": {
+    "hash": "ec57134f1e889e75",
+    "en": "{@inheritDoc}\n<p>\nCalculates positions by traversing the fragment linked list.\n</p>",
+    "ja": "{@inheritDoc}\n<p>\nフラグメントの連結リストをたどって位置を計算します。\n</p>"
+  },
+  "net.zamasoft.zstream.io.util.PositionTrackingOutput#insertFragmentBefore(int)": {
+    "hash": "b7ae1756b13d6bad",
+    "en": "{@inheritDoc}\n<p>\nCreates a new fragment and inserts it before the anchor in the tracking list.\n</p>",
+    "ja": "{@inheritDoc}\n<p>\n新しいフラグメントを作成し、追跡用のリストで基準となるフラグメントの前に挿入します。\n</p>"
+  },
+  "net.zamasoft.zstream.io.util.PositionTrackingOutput#nextId()": {
+    "hash": "5b9699793c55cb89",
+    "en": "Returns the next fragment ID.\n\n@return next available ID.",
+    "ja": "次のフラグメントIDを返します。\n\n@return 次に使えるID。"
+  },
+  "net.zamasoft.zstream.io.util.PositionTrackingOutput#putFragment(int,FragmentInfo)": {
+    "hash": "32808ebd37b7c69d",
+    "en": "Stores fragment info.\n\n@param id       fragment ID.\n@param fragment the fragment info to store.",
+    "ja": "フラグメントの情報を格納します。\n\n@param id       フラグメントID。\n@param fragment 格納するフラグメントの情報。"
+  },
+  "net.zamasoft.zstream.io.util.PositionTrackingOutput#supportsPositionInfo()": {
+    "hash": "0e58dba1692a2095",
+    "en": "{@inheritDoc}\n\n@return always true after wrapping.",
+    "ja": "{@inheritDoc}\n\n@return ラップした後は常にtrue。"
+  },
+  "net.zamasoft.zstream.io.util.PositionTrackingOutput#write(int,byte[],int,int)": {
+    "hash": "427acb7dae98d92c",
+    "en": "{@inheritDoc}\n<p>\nWrites data to the wrapped output and updates the fragment length.\n</p>",
+    "ja": "{@inheritDoc}\n<p>\nラップしている出力へデータを書き込み、フラグメントの長さを更新します。\n</p>"
+  },
+  "net.zamasoft.zstream.io.util.SequentialOutputAdapter": {
+    "hash": "534bc5c280cb4843",
+    "en": "An OutputStream adapter for SequentialOutput.\n<p>\nThis class allows code that expects an OutputStream to write to a\nSequentialOutput. All write operations are delegated to the wrapped\nSequentialOutput's write method.\n</p>\n<p>\nClosing this adapter closes the underlying SequentialOutput.\n</p>\n\n@author MIYABE Tatsuhiko\n@since 1.0",
+    "ja": "SequentialOutputのためのOutputStreamのアダプタです。\n<p>\nこのクラスを使うと、OutputStreamを前提とするコードからSequentialOutputへ書き込めます。\nすべての書き込み操作は、ラップしているSequentialOutputのwriteメソッドへ委譲されます。\n</p>\n<p>\nこのアダプタを閉じると、下位のSequentialOutputも閉じられます。\n</p>\n\n@author MIYABE Tatsuhiko\n@since 1.0"
+  },
+  "net.zamasoft.zstream.io.util.SequentialOutputAdapter#SequentialOutputAdapter(SequentialOutput)": {
+    "hash": "4bfe9da069c5add6",
+    "en": "Creates a new adapter for the specified SequentialOutput.\n\n@param out the SequentialOutput to wrap; must not be null.\n@throws NullPointerException if out is null.",
+    "ja": "指定したSequentialOutputのための新しいアダプタを作成します。\n\n@param out ラップするSequentialOutput。nullであってはなりません。\n@throws NullPointerException outがnullの場合。"
+  },
+  "net.zamasoft.zstream.io.util.SequentialOutputAdapter#close()": {
+    "hash": "c17acc80f5a3c1aa",
+    "en": "Closes the underlying SequentialOutput.\n\n@throws IOException if an I/O error occurs.",
+    "ja": "下位のSequentialOutputを閉じます。\n\n@throws IOException 入出力エラーが発生した場合。"
+  },
+  "net.zamasoft.zstream.io.util.SequentialOutputAdapter#write(byte[])": {
+    "hash": "72cd64472b0c737c",
+    "en": "Writes the entire byte array to the output.\n\n@param b the byte array.\n@throws IOException if an I/O error occurs.",
+    "ja": "バイト配列全体を出力へ書き込みます。\n\n@param b バイト配列。\n@throws IOException 入出力エラーが発生した場合。"
+  },
+  "net.zamasoft.zstream.io.util.SequentialOutputAdapter#write(byte[],int,int)": {
+    "hash": "be67dc9fb37594f5",
+    "en": "Writes a portion of a byte array to the output.\n\n@param b   the byte array.\n@param off the start offset.\n@param len the number of bytes to write.\n@throws IOException if an I/O error occurs.",
+    "ja": "バイト配列の一部を出力へ書き込みます。\n\n@param b   バイト配列。\n@param off 開始オフセット。\n@param len 書き込むバイト数。\n@throws IOException 入出力エラーが発生した場合。"
+  },
+  "net.zamasoft.zstream.io.util.SequentialOutputAdapter#write(int)": {
+    "hash": "533bba3ac0b6413b",
+    "en": "Writes a single byte to the output.\n\n@param b the byte to write (only the lower 8 bits are used).\n@throws IOException if an I/O error occurs.",
+    "ja": "1バイトを出力へ書き込みます。\n\n@param b 書き込むバイト(下位8ビットだけが使われます)。\n@throws IOException 入出力エラーが発生した場合。"
+  },
+  "net.zamasoft.zstream.resolver.Source": {
+    "hash": "ad1d43b17ecd35d5",
+    "en": "Represents a source of data such as a file, HTTP resource, ZIP entry, or\ninline data URI. A {@code Source} extends {@link SourceMetadata} to expose\ndescriptive attributes and {@link Closeable} to allow releasing any\nunderlying connections or streams when the caller is finished.\n\n<p>Implementations are expected to be lazily connected — that is, network\nor file handles should not be opened until one of the accessor methods\n({@link #getInputStream()}, {@link #getReader()}, etc.) is first called.\n\n@author MIYABE Tatsuhiko\n@since 1.0",
+    "ja": "ファイル、HTTPのリソース、ZIPのエントリ、インラインのdata URIなどのデータのソースを表します。\n{@code Source}は、ソースを説明する属性を公開するために{@link SourceMetadata}を、呼び出し側が\n使い終わったときに下位の接続やストリームを解放できるように{@link Closeable}を継承します。\n\n<p>実装は遅延して接続することが求められます。つまり、ネットワークやファイルのハンドルは、\nアクセサメソッド({@link #getInputStream()}、{@link #getReader()}など)のいずれかが最初に\n呼ばれるまで開くべきではありません。\n\n@author MIYABE Tatsuhiko\n@since 1.0"
+  },
+  "net.zamasoft.zstream.resolver.Source#exists()": {
+    "hash": "a0e32160b2e89d74",
+    "en": "Returns {@code true} if the resource denoted by this source actually exists.\nFor file-based sources this checks physical existence; for HTTP sources the\nresponse status code is consulted.\n\n@return {@code true} if the resource exists; {@code false} otherwise.\n@throws IOException if an I/O error occurs while checking for existence.",
+    "ja": "このソースが表すリソースが実際に存在する場合は{@code true}を返します。\nファイルに基づくソースでは物理的に存在するかを調べ、HTTPのソースでは\nレスポンスのステータスコードを参照します。\n\n@return リソースが存在する場合は{@code true}、そうでない場合は{@code false}。\n@throws IOException 存在を確認する間に入出力エラーが発生した場合。"
+  },
+  "net.zamasoft.zstream.resolver.Source#getFile()": {
+    "hash": "23adaa252e125714",
+    "en": "Returns the local {@link File} that backs this source.\n\n@return the backing file.\n@throws UnsupportedOperationException if this source is not file-backed.",
+    "ja": "このソースの実体であるローカルの{@link File}を返します。\n\n@return 実体のファイル。\n@throws UnsupportedOperationException このソースがファイルに基づかない場合。"
+  },
+  "net.zamasoft.zstream.resolver.Source#getInputStream()": {
+    "hash": "c54d5f3e42bb48c6",
+    "en": "Opens and returns a binary input stream for the content of this source.\nCallers are responsible for closing the returned stream. If a stream was\npreviously opened it will be closed and replaced by a fresh one.\n\n@return a new {@link InputStream} positioned at the beginning of the content.\n@throws IOException if an I/O error occurs while opening the stream.",
+    "ja": "このソースの内容を読むためのバイナリの入力ストリームを開いて返します。\n返されたストリームを閉じるのは呼び出し側の責任です。以前にストリームを開いていた場合は、\nそれを閉じて新しいストリームに置き換えます。\n\n@return 内容の先頭に位置づけられた新しい{@link InputStream}。\n@throws IOException ストリームを開く間に入出力エラーが発生した場合。"
+  },
+  "net.zamasoft.zstream.resolver.Source#getReader()": {
+    "hash": "722c51ec66bc9fa4",
+    "en": "Opens and returns a character reader for the content of this source decoded\nwith the character encoding reported by {@link SourceMetadata#getEncoding()}.\n\n@return a {@link Reader} positioned at the beginning of the content.\n@throws UnsupportedOperationException if no character encoding is available\n                                       for this source.\n@throws IOException                    if an I/O error occurs while opening\n                                       the reader.",
+    "ja": "{@link SourceMetadata#getEncoding()}が報告する文字エンコーディングで復号した、\nこのソースの内容を読むための文字のリーダーを開いて返します。\n\n@return 内容の先頭に位置づけられた{@link Reader}。\n@throws UnsupportedOperationException このソースで使える文字エンコーディングがない場合。\n@throws IOException                    リーダーを開く間に入出力エラーが発生した場合。"
+  },
+  "net.zamasoft.zstream.resolver.Source#getValidity()": {
+    "hash": "13f1adb5ee7f6610",
+    "en": "Returns validity information that can be used to determine whether the\ncontent of this source has changed since it was last accessed.\n\n@return a {@link SourceValidity} instance; never {@code null}.\n@throws IOException if an I/O error occurs while determining validity.",
+    "ja": "このソースの内容が最後にアクセスしてから変わったかどうかを判断するのに使える、\n有効性の情報を返します。\n\n@return {@link SourceValidity}のインスタンス。{@code null}にはなりません。\n@throws IOException 有効性を判断する間に入出力エラーが発生した場合。"
+  },
+  "net.zamasoft.zstream.resolver.Source#isFile()": {
+    "hash": "fef94d878174d636",
+    "en": "Returns {@code true} if this source is backed by a local {@link File}.\n\n@return {@code true} if {@link #getFile()} will succeed.\n@throws IOException if an I/O error occurs.",
+    "ja": "このソースがローカルの{@link File}に基づく場合は{@code true}を返します。\n\n@return {@link #getFile()}が成功する場合は{@code true}。\n@throws IOException 入出力エラーが発生した場合。"
+  },
+  "net.zamasoft.zstream.resolver.Source#isInputStream()": {
+    "hash": "528b24f317c8674a",
+    "en": "Returns {@code true} if the content of this source can be read as a binary\n{@link InputStream}.\n\n@return {@code true} if a binary stream is available.\n@throws IOException if an I/O error occurs.",
+    "ja": "このソースの内容をバイナリの{@link InputStream}として読める場合は\n{@code true}を返します。\n\n@return バイナリのストリームが使える場合は{@code true}。\n@throws IOException 入出力エラーが発生した場合。"
+  },
+  "net.zamasoft.zstream.resolver.Source#isReader()": {
+    "hash": "d0bdb6319938b3a2",
+    "en": "Returns {@code true} if the content of this source can be read as a character\n{@link Reader}. This is typically only possible when the encoding is known.\n\n@return {@code true} if a character reader is available.\n@throws IOException if an I/O error occurs.",
+    "ja": "このソースの内容を文字の{@link Reader}として読める場合は{@code true}を返します。\n通常、これはエンコーディングがわかっている場合にだけ可能です。\n\n@return 文字のリーダーが使える場合は{@code true}。\n@throws IOException 入出力エラーが発生した場合。"
+  },
+  "net.zamasoft.zstream.resolver.SourceMetadata": {
+    "hash": "aac1f524a9dd8a94",
+    "en": "Carries descriptive metadata about a data source without opening it.\nImplementations may compute values lazily (e.g. by inspecting HTTP response\nheaders after connecting), hence the checked {@link IOException} on each\naccessor.\n\n@author MIYABE Tatsuhiko\n@since 1.0",
+    "ja": "データのソースを開かずに、それを説明するメタデータを保持します。\n実装は値を遅延して計算してもかまいません(接続した後でHTTPのレスポンスヘッダーを調べるなど)。\nそのため各アクセサは検査例外の{@link IOException}をスローします。\n\n@author MIYABE Tatsuhiko\n@since 1.0"
+  },
+  "net.zamasoft.zstream.resolver.SourceMetadata#getEncoding()": {
+    "hash": "308638ba0c7509b1",
+    "en": "Returns the character encoding (charset name) of the source content, such as\n{@code \"UTF-8\"} or {@code \"ISO-8859-1\"}.\n\n@return the encoding name, or {@code null} if the encoding is unknown or the\n        content is binary.\n@throws IOException if an I/O error occurs while determining the encoding.",
+    "ja": "ソースの内容の文字エンコーディング({@code \"UTF-8\"}や{@code \"ISO-8859-1\"}などのcharset名)を\n返します。\n\n@return エンコーディング名。エンコーディングが不明か、内容がバイナリの場合は\n        {@code null}。\n@throws IOException エンコーディングを判断する間に入出力エラーが発生した場合。"
+  },
+  "net.zamasoft.zstream.resolver.SourceMetadata#getLength()": {
+    "hash": "bbdccc371310204b",
+    "en": "Returns the byte length of the source content.\n\n@return the number of bytes, or {@code -1} if the length is unknown.\n@throws IOException if an I/O error occurs while determining the length.",
+    "ja": "ソースの内容のバイト長を返します。\n\n@return バイト数。長さが不明な場合は{@code -1}。\n@throws IOException 長さを判断する間に入出力エラーが発生した場合。"
+  },
+  "net.zamasoft.zstream.resolver.SourceMetadata#getMimeType()": {
+    "hash": "97379548a9e34ce9",
+    "en": "Returns the MIME type of the source content, such as {@code \"text/html\"} or\n{@code \"application/pdf\"}.\n\n@return the MIME type string, or {@code null} if it cannot be determined.\n@throws IOException if an I/O error occurs while determining the type.",
+    "ja": "ソースの内容のMIME型({@code \"text/html\"}や{@code \"application/pdf\"}など)を返します。\n\n@return MIME型の文字列。判断できない場合は{@code null}。\n@throws IOException 型を判断する間に入出力エラーが発生した場合。"
+  },
+  "net.zamasoft.zstream.resolver.SourceMetadata#getURI()": {
+    "hash": "0d0444b506be30f6",
+    "en": "Returns the canonical URI that identifies this source.\n\n@return the URI of the source; never {@code null}.",
+    "ja": "このソースを識別する正規のURIを返します。\n\n@return ソースのURI。{@code null}にはなりません。"
+  },
+  "net.zamasoft.zstream.resolver.SourceResolver": {
+    "hash": "a8dee731278e957b",
+    "en": "Strategy interface for resolving a {@link URI} into a {@link Source}.\n\n<p>A {@code SourceResolver} is responsible for understanding one or more URI\nschemes and returning an appropriate {@link Source} implementation. Callers\nmust {@link #release(Source) release} every {@link Source} they obtain once\nthey are finished with it so that the resolver can clean up any resources\n(e.g. HTTP connections, file handles).\n\n@author MIYABE Tatsuhiko\n@since 1.0",
+    "ja": "{@link URI}を{@link Source}へ解決するための戦略インターフェースです。\n\n<p>{@code SourceResolver}は、1つ以上のURIスキームを理解し、適切な{@link Source}の実装を返す\n役割を持ちます。呼び出し側は、取得したすべての{@link Source}を使い終えたら\n{@link #release(Source) 解放}して、リゾルバがリソース(HTTPの接続、ファイルのハンドルなど)を\n後始末できるようにしなければなりません。\n\n@author MIYABE Tatsuhiko\n@since 1.0"
+  },
+  "net.zamasoft.zstream.resolver.SourceResolver#release(Source)": {
+    "hash": "3dc7ca5eb53b5084",
+    "en": "Releases any resources held by the given {@link Source}. The source must have\nbeen obtained from {@link #resolve(URI)} on this same resolver instance.\nAfter this call the source must not be used.\n\n@param source the source to release; must not be {@code null}.",
+    "ja": "指定した{@link Source}が保持しているリソースを解放します。ソースは、この同じリゾルバの\nインスタンスの{@link #resolve(URI)}から取得したものでなければなりません。\nこの呼び出しの後は、ソースを使ってはいけません。\n\n@param source 解放するソース。{@code null}であってはなりません。"
+  },
+  "net.zamasoft.zstream.resolver.SourceResolver#resolve(URI)": {
+    "hash": "2a0a447717b54507",
+    "en": "Resolves the given URI and returns a {@link Source} that provides access to\nthe corresponding resource.\n\n@param uri the URI of the resource to resolve; must not be {@code null}.\n@return a {@link Source} for the resource; never {@code null}.\n@throws IOException if the resource cannot be resolved or an I/O error occurs.",
+    "ja": "指定したURIを解決し、対応するリソースへのアクセスを提供する{@link Source}を返します。\n\n@param uri 解決するリソースのURI。{@code null}であってはなりません。\n@return リソースの{@link Source}。{@code null}にはなりません。\n@throws IOException リソースを解決できない場合、または入出力エラーが発生した場合。"
+  },
+  "net.zamasoft.zstream.resolver.SourceValidity": {
+    "hash": "52f5845168adc4b7",
+    "en": "Carries information about whether the content of a {@link Source} has\nchanged since it was last accessed, enabling caching strategies.\n\n<p>A {@code SourceValidity} is obtained via {@link Source#getValidity()} at\nthe time a resource is first fetched.  On subsequent requests the stored\nvalidity can be compared against a freshly obtained one to decide whether the\ncached copy is still usable.\n\n<p>Instances must be {@link Serializable} so that they can be persisted\ntogether with a cached response.\n\n@author MIYABE Tatsuhiko\n@since 1.0",
+    "ja": "{@link Source}の内容が最後にアクセスしてから変わったかどうかの情報を保持し、\nキャッシュの戦略を可能にします。\n\n<p>{@code SourceValidity}は、リソースを最初に取得した時点で{@link Source#getValidity()}によって\n得ます。以降の要求では、保存しておいた有効性を新たに取得したものと比較して、\nキャッシュしたコピーがまだ使えるかどうかを判断できます。\n\n<p>インスタンスは、キャッシュしたレスポンスと一緒に永続化できるように\n{@link Serializable}でなければなりません。\n\n@author MIYABE Tatsuhiko\n@since 1.0"
+  },
+  "net.zamasoft.zstream.resolver.SourceValidity#getValid()": {
+    "hash": "299114c62f72e82a",
+    "en": "Checks whether the resource is still valid without comparing against another\nvalidity object.  Some implementations (e.g. HTTP without a\n{@code Last-Modified} header) can only return {@link Validity#UNKNOWN} here\nand require a second validity object for a meaningful comparison.\n\n@return {@link Validity#VALID} if the resource is unchanged,\n        {@link Validity#INVALID} if it has changed, or\n        {@link Validity#UNKNOWN} if the state cannot be determined.",
+    "ja": "別の有効性オブジェクトと比較せずに、リソースがまだ有効かどうかを調べます。一部の実装\n({@code Last-Modified}ヘッダーのないHTTPなど)は、ここでは{@link Validity#UNKNOWN}しか返せず、\n意味のある比較には2つ目の有効性オブジェクトが必要です。\n\n@return リソースが変わっていない場合は{@link Validity#VALID}、\n        変わった場合は{@link Validity#INVALID}、\n        状態を判断できない場合は{@link Validity#UNKNOWN}。"
+  },
+  "net.zamasoft.zstream.resolver.SourceValidity#getValid(SourceValidity)": {
+    "hash": "907ca389b7207776",
+    "en": "Compares this validity against a second {@link SourceValidity} obtained from\na fresh resolution of the same URI.  Implementations typically compare\ntimestamps or ETags stored in both objects.\n\n@param validity a freshly obtained {@link SourceValidity} for the same\n                resource; must not be {@code null}.\n@return {@link Validity#VALID} if the resource is unchanged,\n        {@link Validity#INVALID} if it has changed, or\n        {@link Validity#UNKNOWN} if the comparison is inconclusive (e.g.\n        the two objects are of incompatible types).",
+    "ja": "同じURIを新たに解決して得た2つ目の{@link SourceValidity}と、この有効性を比較します。\n実装は通常、両方のオブジェクトに格納されたタイムスタンプやETagを比較します。\n\n@param validity 同じリソースについて新たに取得した{@link SourceValidity}。\n                {@code null}であってはなりません。\n@return リソースが変わっていない場合は{@link Validity#VALID}、\n        変わった場合は{@link Validity#INVALID}、\n        比較で結論が出ない場合(2つのオブジェクトの型に互換性がないなど)は\n        {@link Validity#UNKNOWN}。"
+  },
+  "net.zamasoft.zstream.resolver.SourceValidity.Validity": {
+    "hash": "39592907fb29a05a",
+    "en": "Enumeration of possible cache-validity states.",
+    "ja": "キャッシュの有効性の状態を表す列挙型です。"
+  },
+  "net.zamasoft.zstream.resolver.SourceValidity.Validity#INVALID": {
+    "hash": "408e35cc2ad22658",
+    "en": "The resource has changed — the cached copy is no longer valid.",
+    "ja": "リソースが変わっており、キャッシュしたコピーはもう有効ではありません。"
+  },
+  "net.zamasoft.zstream.resolver.SourceValidity.Validity#UNKNOWN": {
+    "hash": "37ce2055b70bba3e",
+    "en": "It cannot be determined whether the resource has changed.",
+    "ja": "リソースが変わったかどうかを判断できません。"
+  },
+  "net.zamasoft.zstream.resolver.SourceValidity.Validity#VALID": {
+    "hash": "d1c7b3429fa76923",
+    "en": "The resource has not changed — the cached copy is still valid.",
+    "ja": "リソースは変わっておらず、キャッシュしたコピーはまだ有効です。"
+  },
+  "net.zamasoft.zstream.resolver.cache.CachedSource": {
+    "hash": "8a066df6f88ef233",
+    "en": "A {@link Source} implementation backed by a temporary cache file on the local\nfile system.  The source is associated with a virtual URI supplied at\nconstruction time, which may differ from the file path.\n\n<p>The cache file is assumed to already exist when this object is created.\n{@link #getValidity()} always returns {@link UnknownSourceValidity} because\nthe freshness of the original resource is managed externally.\n\n@author MIYABE Tatsuhiko\n@since 1.0",
+    "ja": "ローカルのファイルシステム上の一時的なキャッシュファイルに基づく{@link Source}の実装です。\nこのソースには構築時に与えた仮想的なURIが関連づけられ、それはファイルのパスと\n異なってもかまいません。\n\n<p>このオブジェクトを作成する時点で、キャッシュファイルはすでに存在しているものとします。\n元のリソースの鮮度は外部で管理するため、{@link #getValidity()}は常に\n{@link UnknownSourceValidity}を返します。\n\n@author MIYABE Tatsuhiko\n@since 1.0"
+  },
+  "net.zamasoft.zstream.resolver.cache.CachedSource#CachedSource(URI,String,String,File)": {
+    "hash": "4a26f1cc846fb9b5",
+    "en": "Constructs a {@code CachedSource} for the given cache file.\n\n@param uri      the logical URI associated with this cached source; must not\n                be {@code null}.\n@param mimeType the MIME type of the cached content, or {@code null} if\n                unknown.\n@param encoding the character encoding of the cached content, or {@code null}\n                if the content is binary or the encoding is unknown.\n@param file     the cache file holding the content; must not be {@code null}.\n@throws NullPointerException if {@code uri} or {@code file} is {@code null}.",
+    "ja": "指定したキャッシュファイルの{@code CachedSource}を構築します。\n\n@param uri      このキャッシュされたソースに関連づける論理的なURI。\n                {@code null}であってはなりません。\n@param mimeType キャッシュした内容のMIME型。不明な場合は{@code null}。\n@param encoding キャッシュした内容の文字エンコーディング。内容がバイナリか、\n                エンコーディングが不明な場合は{@code null}。\n@param file     内容を保持するキャッシュファイル。{@code null}であってはなりません。\n@throws NullPointerException {@code uri}または{@code file}が{@code null}の場合。"
+  },
+  "net.zamasoft.zstream.resolver.cache.CachedSourceResolver": {
+    "hash": "a12c7d9f0dd360be",
+    "en": "A {@link SourceResolver} that stores remote or computed resources as\ntemporary files so that they can be resolved repeatedly without re-fetching.\n\n<p>Each cached resource is keyed by a normalised URI string.  Callers first\npopulate the cache via {@link #putFile(SourceMetadata)} or\n{@link #putSource(Source)}, after which {@link #resolve(URI)} will return a\n{@link CachedSource} wrapping the corresponding temporary file.\n\n<p>Call {@link #reset()} to delete all cached files and clear the index, or\n{@link #dispose()} (which delegates to {@link #reset()}) when the resolver is\nno longer needed.\n\n@author MIYABE Tatsuhiko\n@since 1.0",
+    "ja": "リモートのリソースや計算で得たリソースを一時ファイルとして保存し、再取得せずに繰り返し\n解決できるようにする{@link SourceResolver}です。\n\n<p>キャッシュした各リソースは、正規化したURI文字列をキーとします。呼び出し側はまず\n{@link #putFile(SourceMetadata)}または{@link #putSource(Source)}でキャッシュに登録します。\nその後、{@link #resolve(URI)}は対応する一時ファイルをラップした{@link CachedSource}を返します。\n\n<p>キャッシュしたファイルをすべて削除して索引を消去するには{@link #reset()}を、リゾルバが\n不要になったときは{@link #dispose()}({@link #reset()}に委譲します)を呼び出してください。\n\n@author MIYABE Tatsuhiko\n@since 1.0"
+  },
+  "net.zamasoft.zstream.resolver.cache.CachedSourceResolver#CachedSourceResolver()": {
+    "hash": "6d0fed084cf34915",
+    "en": "Constructs a resolver that writes temporary files to the JVM default\ntemporary directory.",
+    "ja": "JVMのデフォルトの一時ディレクトリへ一時ファイルを書き出すリゾルバを構築します。"
+  },
+  "net.zamasoft.zstream.resolver.cache.CachedSourceResolver#CachedSourceResolver(File)": {
+    "hash": "dc8468614565072b",
+    "en": "Constructs a resolver that writes temporary files to the given directory.\n\n@param tmpDir the directory for temporary cache files, or {@code null} to\n              use the JVM default temporary directory.",
+    "ja": "指定したディレクトリへ一時ファイルを書き出すリゾルバを構築します。\n\n@param tmpDir 一時的なキャッシュファイルを置くディレクトリ。JVMのデフォルトの\n              一時ディレクトリを使う場合は{@code null}。"
+  },
+  "net.zamasoft.zstream.resolver.cache.CachedSourceResolver#dispose()": {
+    "hash": "ebde098ec693510c",
+    "en": "Disposes of this resolver by clearing the cache.  Equivalent to calling\n{@link #reset()}.",
+    "ja": "キャッシュを消去して、このリゾルバを破棄します。{@link #reset()}を呼び出すのと同じです。"
+  },
+  "net.zamasoft.zstream.resolver.cache.CachedSourceResolver#putFile(SourceMetadata)": {
+    "hash": "de4405bba2f2cb7c",
+    "en": "Registers the given {@link SourceMetadata} in the cache index and returns a\nnewly created empty temporary file that the caller should populate with the\nresource bytes. If a previous entry exists for the same URI its file is\ndeleted once the new one has been created; if creating it fails, the\nprevious entry is left as it was.\n\n@param sourceMetadata metadata of the resource to cache; must not be\n                       {@code null}.\n@return a newly created, empty temporary file ready to receive the content.\n@throws IOException if a temporary file cannot be created, or if reading the\n                    metadata causes an I/O error.",
+    "ja": "指定した{@link SourceMetadata}をキャッシュの索引に登録し、呼び出し側がリソースのバイト列で\n埋めるための、新しく作成した空の一時ファイルを返します。同じURIの以前のエントリがある場合、\nそのファイルは新しいファイルを作成した後で削除されます。作成に失敗した場合は、以前のエントリは\nそのまま残ります。\n\n@param sourceMetadata キャッシュするリソースのメタデータ。\n                       {@code null}であってはなりません。\n@return 内容を受け取る準備ができた、新しく作成した空の一時ファイル。\n@throws IOException 一時ファイルを作成できない場合、またはメタデータの読み込みで\n                    入出力エラーが発生した場合。"
+  },
+  "net.zamasoft.zstream.resolver.cache.CachedSourceResolver#putSource(Source)": {
+    "hash": "9171d4cdb8d50ebd",
+    "en": "Copies the content of {@code source} into a temporary cache file and\nregisters it in the index once the copy is complete; if the copy fails, the\nprevious entry for the same URI is left as it was.  The source's input\nstream is consumed exactly once; the source itself is not closed by this\nmethod.\n\n@param source the source whose content should be cached; must not be\n              {@code null} and must support {@link Source#getInputStream()}.\n@throws IOException if reading from the source or writing to the cache file\n                    fails.",
+    "ja": "{@code source}の内容を一時キャッシュファイルへ複写し、複写が完了した時点で\nインデックスに登録します。複写に失敗した場合、同じURIの以前のエントリは\nそのまま残ります。ソースの入力ストリームはちょうど1回だけ読み込みます。\nソース自体はこのメソッドでは閉じません。\n\n@param source 内容をキャッシュするソース。{@code null}は指定できず、\n              {@link Source#getInputStream()}に対応している必要があります。\n@throws IOException ソースからの読み込み、またはキャッシュファイルへの書き込みに\n                    失敗した場合。"
+  },
+  "net.zamasoft.zstream.resolver.cache.CachedSourceResolver#reset()": {
+    "hash": "3ed770faac7fb70e",
+    "en": "Deletes all temporary cache files and clears the URI index.",
+    "ja": "一時キャッシュファイルを全て削除し、URIのインデックスを空にします。"
+  },
+  "net.zamasoft.zstream.resolver.cache.CachedSourceResolver#toKey(URI)": {
+    "hash": "ef6de6b669bf8a18",
+    "en": "Converts a URI to a normalised cache key string, selectively URL-decoding\ncharacters that are safe to compare literally for HTTP(S) URIs.\n\n@param uri the URI to convert; must not be {@code null}.\n@return a string key suitable for use as a cache map key.",
+    "ja": "URIを正規化したキャッシュキーの文字列に変換します。HTTP(S)のURIでは、\nそのまま比較しても安全な文字を選んでURLデコードします。\n\n@param uri 変換するURI。{@code null}は指定できません。\n@return キャッシュのマップのキーとして使える文字列。"
+  },
+  "net.zamasoft.zstream.resolver.cache.CachedSourceResolver.CachedSourceInfo": {
+    "hash": "7c10f7ece8424213",
+    "en": "Internal entry that associates a canonical URI with its cached file and\ncontent-type metadata.\n\n@param uri      the normalised URI of the original resource.\n@param mimeType the MIME type of the cached content, or {@code null}.\n@param encoding the character encoding of the cached content, or {@code null}.\n@param file     the temporary file holding the cached bytes.",
+    "ja": "正規化したURIを、そのキャッシュファイルおよび内容の型のメタデータと\n結び付ける内部のエントリです。\n\n@param uri      元のリソースの正規化したURI。\n@param mimeType キャッシュした内容のMIME型、または{@code null}。\n@param encoding キャッシュした内容の文字エンコーディング、または{@code null}。\n@param file     キャッシュしたバイト列を保持する一時ファイル。"
+  },
+  "net.zamasoft.zstream.resolver.composite.CompositeSourceResolver": {
+    "hash": "5cdf890d8a8a9aab",
+    "en": "A {@link SourceResolver} that aggregates multiple delegate resolvers, each\nresponsible for one or more URI schemes.  When {@link #resolve(URI)} is\ncalled the scheme of the supplied URI is used to select the appropriate\ndelegate.  If no delegate is registered for the scheme the\n{@link #getDefaultSourceResolver() default resolver} is used instead.\n\n<p>Scheme look-up is case-insensitive.  URIs without a scheme are treated as\nbelonging to the {@link #getDefaultSchema() default scheme}.\n\n@author MIYABE Tatsuhiko\n@since 1.0",
+    "ja": "複数の委譲先リゾルバをまとめる{@link SourceResolver}です。各委譲先は1つ以上の\nURIスキームを受け持ちます。{@link #resolve(URI)}が呼ばれると、渡されたURIの\nスキームによって適切な委譲先を選びます。そのスキームに委譲先が登録されていない\n場合は、代わりに{@link #getDefaultSourceResolver() デフォルトのリゾルバ}を使います。\n\n<p>スキームの検索では大文字と小文字を区別しません。スキームの無いURIは\n{@link #getDefaultSchema() デフォルトのスキーム}に属するものとして扱います。\n\n@author MIYABE Tatsuhiko\n@since 1.0"
+  },
+  "net.zamasoft.zstream.resolver.composite.CompositeSourceResolver#addSourceResolver(String,SourceResolver)": {
+    "hash": "7195b4a676a30471",
+    "en": "Registers a {@link SourceResolver} for the given URI scheme.  Any existing\nregistration for the same scheme (compared case-insensitively) is replaced.\n\n@param scheme   the URI scheme to register (e.g. {@code \"file\"},\n                {@code \"http\"}); leading/trailing whitespace is ignored.\n@param resolver the resolver to associate with the scheme; must not be\n                {@code null}.",
+    "ja": "指定したURIスキームに{@link SourceResolver}を登録します。同じスキーム(大文字と\n小文字を区別せずに比較)の既存の登録は置き換えられます。\n\n@param scheme   登録するURIスキーム(例えば{@code \"file\"}、\n                {@code \"http\"})。前後の空白は無視されます。\n@param resolver スキームに結び付けるリゾルバ。{@code null}は\n                指定できません。"
+  },
+  "net.zamasoft.zstream.resolver.composite.CompositeSourceResolver#createGenericCompositeSourceResolver()": {
+    "hash": "60441d1eea821021",
+    "en": "Creates a pre-configured {@code CompositeSourceResolver} that handles the\nmost common URI schemes:\n<ul>\n  <li>{@code file} — local file system via {@link FileSourceResolver}</li>\n  <li>{@code http} / {@code https} — HTTP(S) via {@link HTTPSourceResolver}</li>\n  <li>{@code data} — inline RFC 2397 data URIs via\n      {@link DataSourceResolver}</li>\n</ul>\n\n@return a new {@code CompositeSourceResolver} with the default scheme\n        registrations.",
+    "ja": "次のよく使われるURIスキームを扱うように設定済みの{@code CompositeSourceResolver}を\n作成します。\n<ul>\n  <li>{@code file} — {@link FileSourceResolver}によるローカルのファイルシステム</li>\n  <li>{@code http} / {@code https} — {@link HTTPSourceResolver}によるHTTP(S)</li>\n  <li>{@code data} — {@link DataSourceResolver}による\n      RFC 2397のインラインのdata URI</li>\n</ul>\n\n@return デフォルトのスキームを登録した新しい\n        {@code CompositeSourceResolver}。"
+  },
+  "net.zamasoft.zstream.resolver.composite.CompositeSourceResolver#getDefaultSchema()": {
+    "hash": "8d718fbed7a87f64",
+    "en": "Returns the scheme assumed for URIs that carry no explicit scheme component.\n\n@return the default scheme string; never {@code null}.",
+    "ja": "明示的なスキームを持たないURIに想定するスキームを返します。\n\n@return デフォルトのスキームの文字列。{@code null}にはなりません。"
+  },
+  "net.zamasoft.zstream.resolver.composite.CompositeSourceResolver#getDefaultSourceResolver()": {
+    "hash": "8250dd674d2c18d0",
+    "en": "Returns the fallback {@link SourceResolver} used when no scheme-specific\nresolver is registered for a URI.\n\n@return the fallback resolver, or {@code null} if none is set.",
+    "ja": "URIに対応するスキーム別のリゾルバが登録されていない場合に使う、\n代替の{@link SourceResolver}を返します。\n\n@return 代替のリゾルバ。設定されていない場合は{@code null}。"
+  },
+  "net.zamasoft.zstream.resolver.composite.CompositeSourceResolver#getSchemata()": {
+    "hash": "0965e497e2b4167d",
+    "en": "Returns an unmodifiable view of the set of URI schemes currently registered\nwith this resolver.\n\n@return the set of registered scheme strings.",
+    "ja": "このリゾルバに現在登録されているURIスキームの集合を、変更できない\nビューとして返します。\n\n@return 登録されているスキームの文字列の集合。"
+  },
+  "net.zamasoft.zstream.resolver.composite.CompositeSourceResolver#getSourceResolver(String)": {
+    "hash": "3122239030030a3c",
+    "en": "Returns the {@link SourceResolver} registered for the given scheme, or\n{@code null} if none is registered.\n\n@param scheme the URI scheme to look up; leading/trailing whitespace is\n              ignored.\n@return the registered resolver, or {@code null}.",
+    "ja": "指定したスキームに登録されている{@link SourceResolver}を返します。登録されて\nいない場合は{@code null}を返します。\n\n@param scheme 検索するURIスキーム。前後の空白は\n              無視されます。\n@return 登録されているリゾルバ、または{@code null}。"
+  },
+  "net.zamasoft.zstream.resolver.composite.CompositeSourceResolver#getSourceResolver(URI)": {
+    "hash": "8aad29bb8c09379a",
+    "en": "Selects the appropriate delegate {@link SourceResolver} for the given URI by\nexamining its scheme.  Falls back to the default resolver when no\nscheme-specific delegate is found.\n\n@param uri the URI whose scheme is used for look-up; must not be\n           {@code null}.\n@return the selected resolver; never {@code null}.",
+    "ja": "指定したURIのスキームを調べて、適切な委譲先の{@link SourceResolver}を選びます。\nスキーム別の委譲先が見つからない場合は、デフォルトのリゾルバを使います。\n\n@param uri 検索にスキームを使うURI。{@code null}は\n           指定できません。\n@return 選んだリゾルバ。{@code null}にはなりません。"
+  },
+  "net.zamasoft.zstream.resolver.composite.CompositeSourceResolver#removeSourceResolver(String)": {
+    "hash": "3bdd0673edc0605a",
+    "en": "Removes the {@link SourceResolver} previously registered for the given\nscheme.  If no resolver is registered for the scheme this method is a no-op.\n\n@param scheme the URI scheme to deregister; leading/trailing whitespace is\n              ignored.",
+    "ja": "指定したスキームに登録済みの{@link SourceResolver}を取り除きます。そのスキームに\nリゾルバが登録されていない場合、このメソッドは何もしません。\n\n@param scheme 登録を解除するURIスキーム。前後の空白は\n              無視されます。"
+  },
+  "net.zamasoft.zstream.resolver.composite.CompositeSourceResolver#setDefaultScheme(String)": {
+    "hash": "6219c41092e2819e",
+    "en": "Sets the scheme assumed for URIs that carry no explicit scheme component.\nDefaults to {@code \"file\"}.\n\n@param defaultScheme the default scheme string; must not be {@code null}.",
+    "ja": "明示的なスキームを持たないURIに想定するスキームを設定します。\nデフォルトは{@code \"file\"}です。\n\n@param defaultScheme デフォルトのスキームの文字列。{@code null}は指定できません。"
+  },
+  "net.zamasoft.zstream.resolver.composite.CompositeSourceResolver#setDefaultSourceResolver(SourceResolver)": {
+    "hash": "70906a6dac0a5636",
+    "en": "Sets the fallback {@link SourceResolver} used when no scheme-specific\nresolver is registered for a URI.\n\n@param defaultResolver the fallback resolver; may be {@code null} to disable\n                       fallback resolution.",
+    "ja": "URIに対応するスキーム別のリゾルバが登録されていない場合に使う、\n代替の{@link SourceResolver}を設定します。\n\n@param defaultResolver 代替のリゾルバ。代替による解決を無効にする場合は\n                       {@code null}。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.data.DataSource": {
+    "hash": "9e574bf7516efcc5",
+    "en": "A {@link Source} implementation that decodes inline content embedded in a\n<a href=\"https://datatracker.ietf.org/doc/html/rfc2397\">RFC 2397</a>\n{@code data:} URI.\n\n<p>The URI is parsed lazily on the first access.  Both plain URL-encoded data\nand Base64-encoded data are supported.  Example URIs:\n<pre>\n  data:text/plain;charset=UTF-8,Hello%20World\n  data:image/png;base64,iVBORw0KGgo...\n</pre>\n\n<p>Because the data is fully held in memory this source is always valid\n({@link ValidSourceValidity#SHARED_INSTANCE}).\n\n@author MIYABE Tatsuhiko\n@since 1.0",
+    "ja": "<a href=\"https://datatracker.ietf.org/doc/html/rfc2397\">RFC 2397</a>の\n{@code data:} URIに埋め込まれたインラインの内容をデコードする{@link Source}の実装です。\n\n<p>URIは最初のアクセス時に遅延して解析します。URLエンコードしただけのデータと\nBase64でエンコードしたデータの両方に対応します。URIの例:\n<pre>\n  data:text/plain;charset=UTF-8,Hello%20World\n  data:image/png;base64,iVBORw0KGgo...\n</pre>\n\n<p>データは全てメモリ上に保持されるため、このソースは常に有効です\n({@link ValidSourceValidity#SHARED_INSTANCE})。\n\n@author MIYABE Tatsuhiko\n@since 1.0"
+  },
+  "net.zamasoft.zstream.resolver.protocol.data.DataSource#DataSource(URI)": {
+    "hash": "0867f38bb533821c",
+    "en": "Constructs a {@code DataSource} for the given {@code data:} URI.\n\n@param uri a {@code data:} scheme URI; must not be {@code null}.",
+    "ja": "指定した{@code data:} URIの{@code DataSource}を構築します。\n\n@param uri {@code data:}スキームのURI。{@code null}は指定できません。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.data.DataSource#exists()": {
+    "hash": "6925e529abcff3dd",
+    "en": "Returns {@code true} if the URI was successfully parsed and contains data.\n\n@return {@code true} if data is present.\n@throws IOException if the URI cannot be parsed.",
+    "ja": "URIの解析に成功し、データを含んでいる場合は{@code true}を返します。\n\n@return データがある場合は{@code true}。\n@throws IOException URIを解析できない場合。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.data.DataSource#getEncoding()": {
+    "hash": "5bec80ea768c600c",
+    "en": "Returns the character encoding parsed from the {@code charset} parameter of\nthe {@code data:} URI, or {@code null} if the content is binary or the\nencoding is not specified.\n\n@return the encoding name, or {@code null}.\n@throws IOException if the URI cannot be parsed.",
+    "ja": "{@code data:} URIの{@code charset}パラメータから解析した文字エンコーディングを\n返します。内容がバイナリの場合、またはエンコーディングが指定されていない場合は\n{@code null}を返します。\n\n@return エンコーディング名、または{@code null}。\n@throws IOException URIを解析できない場合。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.data.DataSource#getFile()": {
+    "hash": "f72b5f78ffe660e2",
+    "en": "Always throws {@link UnsupportedOperationException} — {@code data:} sources\nare never backed by a file.\n\n@throws UnsupportedOperationException always.",
+    "ja": "常に{@link UnsupportedOperationException}を投げます。{@code data:}のソースが\nファイルに基づくことはありません。\n\n@throws UnsupportedOperationException 常に投げます。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.data.DataSource#getInputStream()": {
+    "hash": "37744f603dc63f97",
+    "en": "Returns the decoded content as a {@link ByteArrayInputStream}. Each call\nreturns a fresh stream positioned at the beginning.\n\n@return a new {@link ByteArrayInputStream} over the decoded data.\n@throws IOException if the URI cannot be parsed.",
+    "ja": "デコードした内容を{@link ByteArrayInputStream}として返します。呼び出すたびに、\n先頭に位置する新しいストリームを返します。\n\n@return デコードしたデータを読む新しい{@link ByteArrayInputStream}。\n@throws IOException URIを解析できない場合。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.data.DataSource#getLength()": {
+    "hash": "811a35f6630d68f7",
+    "en": "Returns the byte length of the decoded data.\n\n@return the number of decoded bytes.\n@throws IOException if the URI cannot be parsed.",
+    "ja": "デコードしたデータのバイト長を返します。\n\n@return デコードしたバイト数。\n@throws IOException URIを解析できない場合。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.data.DataSource#getMimeType()": {
+    "hash": "6965e5433d4b8f5c",
+    "en": "Returns the MIME type parsed from the {@code data:} URI header.\n\n@return the MIME type string, or {@code null} if the URI does not specify\n        one (defaults to {@code \"text/plain\"} per RFC 2397).\n@throws IOException if the URI cannot be parsed.",
+    "ja": "{@code data:} URIのヘッダから解析したMIME型を返します。\n\n@return MIME型の文字列。URIで指定されていない場合は{@code null}\n        (RFC 2397でのデフォルトは{@code \"text/plain\"})。\n@throws IOException URIを解析できない場合。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.data.DataSource#getReader()": {
+    "hash": "c8aeed1c05d085ab",
+    "en": "Returns the decoded content as a character {@link Reader} using the encoding\nparsed from the URI.\n\n@return a {@link Reader} over the decoded data.\n@throws UnsupportedOperationException if no character encoding is available\n                                       for this source.\n@throws IOException                    if the URI cannot be parsed.",
+    "ja": "URIから解析したエンコーディングで、デコードした内容を文字の{@link Reader}として\n返します。\n\n@return デコードしたデータを読む{@link Reader}。\n@throws UnsupportedOperationException このソースで使える文字エンコーディングが\n                                       無い場合。\n@throws IOException                    URIを解析できない場合。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.data.DataSource#getValidity()": {
+    "hash": "02806a2da826190c",
+    "en": "Returns {@link ValidSourceValidity#SHARED_INSTANCE} because in-memory data\nnever changes.\n\n@return the shared always-valid validity instance.\n@throws IOException never thrown.",
+    "ja": "メモリ上のデータは変化しないため、{@link ValidSourceValidity#SHARED_INSTANCE}を\n返します。\n\n@return 常に有効であることを表す共有の有効性インスタンス。\n@throws IOException 投げられることはありません。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.data.DataSource#isFile()": {
+    "hash": "326ffa5eb53e4509",
+    "en": "Always returns {@code false} — {@code data:} sources are not file-backed.\n\n@return {@code false}.\n@throws IOException never thrown.",
+    "ja": "常に{@code false}を返します。{@code data:}のソースはファイルに基づきません。\n\n@return {@code false}。\n@throws IOException 投げられることはありません。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.data.DataSource#isInputStream()": {
+    "hash": "40c9caf1c0303109",
+    "en": "Always returns {@code true} — the decoded bytes are available as a stream.\n\n@return {@code true}.\n@throws IOException never thrown.",
+    "ja": "常に{@code true}を返します。デコードしたバイト列はストリームとして使えます。\n\n@return {@code true}。\n@throws IOException 投げられることはありません。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.data.DataSource#isReader()": {
+    "hash": "0594df5fde94d5fd",
+    "en": "Returns {@code true} if a {@code charset} encoding was parsed from the URI,\nmeaning the content can also be read as a character stream.\n\n@return {@code true} if a character encoding is known.\n@throws IOException if the URI cannot be parsed.",
+    "ja": "URIから{@code charset}のエンコーディングを解析できた場合、つまり内容を\n文字ストリームとしても読める場合は{@code true}を返します。\n\n@return 文字エンコーディングがわかっている場合は{@code true}。\n@throws IOException URIを解析できない場合。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.data.DataSourceResolver": {
+    "hash": "ec3badd6fd7f8c56",
+    "en": "A {@link SourceResolver} implementation that handles\n<a href=\"https://datatracker.ietf.org/doc/html/rfc2397\">RFC 2397</a>\n{@code data:} URIs by constructing a {@link DataSource} for each resolved\nURI.\n\n<p>Because {@code data:} URIs are self-contained, this resolver has no\nexternal dependencies and no shared state.\n\n@author MIYABE Tatsuhiko\n@since 1.0",
+    "ja": "<a href=\"https://datatracker.ietf.org/doc/html/rfc2397\">RFC 2397</a>の\n{@code data:} URIを扱う{@link SourceResolver}の実装です。解決するURIごとに\n{@link DataSource}を構築します。\n\n<p>{@code data:} URIはそれ自体で完結しているため、このリゾルバは外部への依存も\n共有の状態も持ちません。\n\n@author MIYABE Tatsuhiko\n@since 1.0"
+  },
+  "net.zamasoft.zstream.resolver.protocol.data.DataSourceResolver#release(Source)": {
+    "hash": "7daba73f47e74256",
+    "en": "Releases the given source by closing it.  Any {@link IOException} thrown\nduring close is silently ignored.\n\n@param source the source to release; must be a {@link DataSource} obtained\n              from this resolver.",
+    "ja": "指定したソースを閉じて解放します。閉じる際に投げられた{@link IOException}は\n黙って無視します。\n\n@param source 解放するソース。このリゾルバから得た{@link DataSource}である\n              必要があります。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.data.DataSourceResolver#resolve(URI)": {
+    "hash": "c969dcdc5cfd3466",
+    "en": "Resolves the given {@code data:} URI by wrapping it in a {@link DataSource}.\n\n@param uri a {@code data:} scheme URI; must not be {@code null}.\n@return a new {@link DataSource} for the URI.\n@throws IOException if an I/O error occurs (in practice this should not\n                    happen as parsing is deferred to the first access).",
+    "ja": "指定した{@code data:} URIを{@link DataSource}で包んで解決します。\n\n@param uri {@code data:}スキームのURI。{@code null}は指定できません。\n@return URIに対する新しい{@link DataSource}。\n@throws IOException 入出力エラーが発生した場合(解析は最初のアクセスまで遅らせるため、\n                    実際には発生しないはずです)。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.file.FileSource": {
+    "hash": "31b3b88518123178",
+    "en": "A {@link net.zamasoft.zstream.resolver.Source Source} implementation that\nreads content from a local file on the file system.\n\n<p>MIME type detection is performed lazily from the file extension when not\nsupplied explicitly.  Validity is based on the file's last-modified timestamp.\n\n@author MIYABE Tatsuhiko\n@since 1.0",
+    "ja": "ファイルシステム上のローカルファイルから内容を読む\n{@link net.zamasoft.zstream.resolver.Source Source}の実装です。\n\n<p>MIME型が明示的に渡されなかった場合は、ファイルの拡張子から遅延して判定します。\n有効性はファイルの最終更新時刻に基づきます。\n\n@author MIYABE Tatsuhiko\n@since 1.0"
+  },
+  "net.zamasoft.zstream.resolver.protocol.file.FileSource#FileSource(File)": {
+    "hash": "23c5c3ca263c70d2",
+    "en": "Constructs a {@code FileSource} from a {@link File}.  Both MIME type and\ncharacter encoding are determined automatically.\n\n@param file the backing file; must not be {@code null}.",
+    "ja": "{@link File}から{@code FileSource}を構築します。MIME型と文字エンコーディングは\nどちらも自動的に決めます。\n\n@param file 基になるファイル。{@code null}は指定できません。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.file.FileSource#FileSource(File,String)": {
+    "hash": "de96617f7b7b782f",
+    "en": "Constructs a {@code FileSource} from a {@link File} with an explicit MIME\ntype.  The character encoding is left unknown.\n\n@param file     the backing file; must not be {@code null}.\n@param mimeType the MIME type, or {@code null} for auto-detection.",
+    "ja": "MIME型を明示して、{@link File}から{@code FileSource}を構築します。\n文字エンコーディングは不明のままです。\n\n@param file     基になるファイル。{@code null}は指定できません。\n@param mimeType MIME型。自動判定する場合は{@code null}。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.file.FileSource#FileSource(File,String,String)": {
+    "hash": "936172ea70f12d16",
+    "en": "Constructs a {@code FileSource} from a {@link File} with an explicit MIME\ntype and character encoding.  The URI is derived from the file path.\n\n@param file     the backing file; must not be {@code null}.\n@param mimeType the MIME type, or {@code null} for auto-detection.\n@param encoding the character encoding, or {@code null} if unknown.",
+    "ja": "MIME型と文字エンコーディングを明示して、{@link File}から{@code FileSource}を\n構築します。URIはファイルのパスから導きます。\n\n@param file     基になるファイル。{@code null}は指定できません。\n@param mimeType MIME型。自動判定する場合は{@code null}。\n@param encoding 文字エンコーディング。不明の場合は{@code null}。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.file.FileSource#FileSource(File,URI,String,String)": {
+    "hash": "c26e2300a43a4713",
+    "en": "Constructs a {@code FileSource} with all attributes specified explicitly.\n\n@param file     the backing file; must not be {@code null}.\n@param uri      the URI to associate with this source; must not be\n                {@code null}.\n@param mimeType the MIME type, or {@code null} for auto-detection.\n@param encoding the character encoding, or {@code null} if unknown.",
+    "ja": "全ての属性を明示して{@code FileSource}を構築します。\n\n@param file     基になるファイル。{@code null}は指定できません。\n@param uri      このソースに結び付けるURI。{@code null}は\n                指定できません。\n@param mimeType MIME型。自動判定する場合は{@code null}。\n@param encoding 文字エンコーディング。不明の場合は{@code null}。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.file.FileSource#FileSource(URI)": {
+    "hash": "7d3c58d35eb84949",
+    "en": "Constructs a {@code FileSource} from a {@code file:} URI by decoding the\npath component.\n\n@param uri a {@code file:} scheme URI; must not be {@code null}.\n@throws IOException if the URI path cannot be decoded.",
+    "ja": "{@code file:} URIのパス部分をデコードして{@code FileSource}を構築します。\n\n@param uri {@code file:}スキームのURI。{@code null}は指定できません。\n@throws IOException URIのパスをデコードできない場合。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.file.FileSource#exists()": {
+    "hash": "7d16473429c8682f",
+    "en": "Returns {@code true} if the backing file exists on the file system.\n\n@return {@code true} if the file exists; {@code false} otherwise.\n@throws IOException if an I/O error occurs.",
+    "ja": "基になるファイルがファイルシステム上に存在する場合は{@code true}を返します。\n\n@return ファイルが存在する場合は{@code true}、そうでなければ{@code false}。\n@throws IOException 入出力エラーが発生した場合。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.file.FileSource#getEncoding()": {
+    "hash": "be81ebb61eaef8d5",
+    "en": "Returns the character encoding supplied at construction time.\n\n@return the encoding name, or {@code null} if unknown.",
+    "ja": "構築時に渡された文字エンコーディングを返します。\n\n@return エンコーディング名。不明の場合は{@code null}。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.file.FileSource#getFile()": {
+    "hash": "7e609b1e0890af2e",
+    "en": "Returns the local {@link File} that backs this source.\n\n@return the backing file; never {@code null}.",
+    "ja": "このソースの基になるローカルの{@link File}を返します。\n\n@return 基になるファイル。{@code null}にはなりません。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.file.FileSource#getInputStream()": {
+    "hash": "acc7081c1a147494",
+    "en": "Opens and returns a {@link java.io.FileInputStream} for the backing file.\n\n@return a new {@link InputStream} positioned at the beginning of the file.\n@throws IOException if the file cannot be opened.",
+    "ja": "基になるファイルの{@link java.io.FileInputStream}を開いて返します。\n\n@return ファイルの先頭に位置する新しい{@link InputStream}。\n@throws IOException ファイルを開けない場合。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.file.FileSource#getLength()": {
+    "hash": "cbad9eb46d5f0c80",
+    "en": "Returns the byte length of the backing file.\n\n@return the number of bytes, or {@code 0} if the file does not exist.\n@throws IOException if an I/O error occurs.",
+    "ja": "基になるファイルのバイト長を返します。\n\n@return バイト数。ファイルが存在しない場合は{@code 0}。\n@throws IOException 入出力エラーが発生した場合。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.file.FileSource#getMimeType()": {
+    "hash": "603e78e51c0fcfee",
+    "en": "Returns the MIME type of the file, auto-detected from the file extension\nwhen not supplied at construction time ({@link MimeTypes#fromFileName}).\n\n@return the MIME type string, or {@code null} if it cannot be determined.\n@throws IOException if an I/O error occurs.",
+    "ja": "ファイルのMIME型を返します。構築時に渡されなかった場合は、ファイルの拡張子から\n自動判定します({@link MimeTypes#fromFileName})。\n\n@return MIME型の文字列。判定できない場合は{@code null}。\n@throws IOException 入出力エラーが発生した場合。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.file.FileSource#getReader()": {
+    "hash": "bd007eaeacf4808f",
+    "en": "Opens and returns a character {@link Reader} for the file using the encoding\nsupplied at construction time.\n\n@return a {@link Reader} positioned at the beginning of the file.\n@throws UnsupportedOperationException if no character encoding is known.\n@throws IOException if the file cannot be opened.",
+    "ja": "構築時に渡されたエンコーディングで、ファイルを読む文字の{@link Reader}を開いて\n返します。\n\n@return ファイルの先頭に位置する{@link Reader}。\n@throws UnsupportedOperationException 文字エンコーディングが不明の場合。\n@throws IOException ファイルを開けない場合。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.file.FileSource#getValidity()": {
+    "hash": "28143ee62be0a1d8",
+    "en": "Returns a {@link SourceValidity} based on the file's last-modified timestamp.\n\n@return a validity instance; never {@code null}.\n@throws IOException if an I/O error occurs.",
+    "ja": "ファイルの最終更新時刻に基づく{@link SourceValidity}を返します。\n\n@return 有効性のインスタンス。{@code null}にはなりません。\n@throws IOException 入出力エラーが発生した場合。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.file.FileSource#isFile()": {
+    "hash": "b1d994de4657c375",
+    "en": "Always returns {@code true} — this source is always backed by a local file.\n\n@return {@code true}.\n@throws IOException never thrown.",
+    "ja": "常に{@code true}を返します。このソースは常にローカルファイルに基づきます。\n\n@return {@code true}。\n@throws IOException 投げられることはありません。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.file.FileSource#isInputStream()": {
+    "hash": "f1a96f44e60be452",
+    "en": "Always returns {@code true} — file content is always readable as a binary\nstream.\n\n@return {@code true}.\n@throws IOException never thrown.",
+    "ja": "常に{@code true}を返します。ファイルの内容は常にバイナリストリームとして\n読めます。\n\n@return {@code true}。\n@throws IOException 投げられることはありません。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.file.FileSource#isReader()": {
+    "hash": "1acf829218b7503d",
+    "en": "Returns {@code true} if a character encoding was supplied at construction\ntime, meaning the content can be read as a character stream.\n\n@return {@code true} if a character encoding is known.\n@throws IOException never thrown.",
+    "ja": "構築時に文字エンコーディングが渡された場合、つまり内容を文字ストリームとして\n読める場合は{@code true}を返します。\n\n@return 文字エンコーディングがわかっている場合は{@code true}。\n@throws IOException 投げられることはありません。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.file.FileSourceResolver": {
+    "hash": "1a385f59fa725222",
+    "en": "A {@link SourceResolver} implementation that handles {@code file:} URIs by\nconstructing a {@link FileSource} backed by the local file system.\n\n@author MIYABE Tatsuhiko\n@since 1.0",
+    "ja": "{@code file:} URIを扱う{@link SourceResolver}の実装です。ローカルの\nファイルシステムに基づく{@link FileSource}を構築します。\n\n@author MIYABE Tatsuhiko\n@since 1.0"
+  },
+  "net.zamasoft.zstream.resolver.protocol.file.FileSourceResolver#release(Source)": {
+    "hash": "9882dc8c856a16e0",
+    "en": "Releases the given source.  For file-based sources no explicit cleanup is\nrequired, so this method does nothing.\n\n@param source the source to release; must have been obtained from this\n              resolver.",
+    "ja": "指定したソースを解放します。ファイルに基づくソースでは明示的な後始末が\n不要なため、このメソッドは何もしません。\n\n@param source 解放するソース。このリゾルバから得たものである\n              必要があります。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.file.FileSourceResolver#resolve(URI)": {
+    "hash": "8fb6ed99acca7319",
+    "en": "Resolves the given {@code file:} URI and returns a {@link FileSource} for\nthe corresponding local file.\n\n@param uri a {@code file:} scheme URI; must not be {@code null}.\n@return a new {@link FileSource} for the local file.\n@throws IOException if the URI path cannot be decoded or an I/O error occurs.",
+    "ja": "指定した{@code file:} URIを解決し、対応するローカルファイルの{@link FileSource}を\n返します。\n\n@param uri {@code file:}スキームのURI。{@code null}は指定できません。\n@return ローカルファイルの新しい{@link FileSource}。\n@throws IOException URIのパスをデコードできない場合、または入出力エラーが発生した場合。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.http.HTTPSource": {
+    "hash": "820ca3cae42f1309",
+    "en": "HTTP/HTTPS source backed by the JDK HTTP client.",
+    "ja": "JDKのHTTPクライアントを使うHTTP/HTTPSのソースです。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.http.HTTPSourceResolver": {
+    "hash": "1c518f3e5d2b2750",
+    "en": "A {@link SourceResolver} implementation that handles {@code http:} and\n{@code https:} URIs with the JDK HTTP client.",
+    "ja": "{@code http:}と{@code https:}のURIをJDKのHTTPクライアントで扱う\n{@link SourceResolver}の実装です。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.stream.StreamSource": {
+    "hash": "c4526f4aaee0f3f6",
+    "en": "A {@link net.zamasoft.zstream.resolver.Source Source} implementation that\nwraps an existing {@link InputStream} or {@link Reader}.\n\n<p>The underlying stream or reader is wrapped in a buffered version that\nsupports {@link java.io.InputStream#mark(int) mark}/{@link java.io.InputStream#reset() reset}\nup to {@value #MARK_LIMIT} bytes, so that {@link #getInputStream()} and\n{@link #getReader()} can be called multiple times on the same source.\n\n<p>The source never closes the underlying stream — close operations on the\ninternal buffered wrapper are silently ignored.  Validity is always\n{@link net.zamasoft.zstream.resolver.util.UnknownSourceValidity#SHARED_INSTANCE UNKNOWN}\nbecause a stream has no stable modification-time concept.\n\n@author MIYABE Tatsuhiko\n@since 1.0",
+    "ja": "既存の{@link InputStream}または{@link Reader}を包む\n{@link net.zamasoft.zstream.resolver.Source Source}の実装です。\n\n<p>基になるストリームまたはリーダは、{@value #MARK_LIMIT}バイトまでの\n{@link java.io.InputStream#mark(int) mark}/{@link java.io.InputStream#reset() reset}に\n対応するバッファ付きの版で包まれます。そのため、同じソースに対して\n{@link #getInputStream()}と{@link #getReader()}を何度でも呼び出せます。\n\n<p>このソースが基になるストリームを閉じることはありません。内部のバッファ付き\nラッパーに対するclose操作は黙って無視されます。ストリームには安定した更新時刻という\n概念が無いため、有効性は常に\n{@link net.zamasoft.zstream.resolver.util.UnknownSourceValidity#SHARED_INSTANCE UNKNOWN}です。\n\n@author MIYABE Tatsuhiko\n@since 1.0"
+  },
+  "net.zamasoft.zstream.resolver.protocol.stream.StreamSource#StreamSource(URI,InputStream)": {
+    "hash": "e5a1aba89ac0cf2a",
+    "en": "Constructs a {@code StreamSource} backed by an {@link InputStream} with no\nmetadata.\n\n@param uri the URI to associate with this source; must not be {@code null}.\n@param in  the input stream to wrap; must not be {@code null}.",
+    "ja": "{@link InputStream}に基づく、メタデータの無い{@code StreamSource}を構築します。\n\n@param uri このソースに結び付けるURI。{@code null}は指定できません。\n@param in  包む入力ストリーム。{@code null}は指定できません。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.stream.StreamSource#StreamSource(URI,InputStream,String)": {
+    "hash": "d22ccdbdf3847c0c",
+    "en": "Constructs a {@code StreamSource} backed by an {@link InputStream} with a\nknown MIME type but no character encoding and unknown length.\n\n@param uri      the URI to associate with this source; must not be\n                {@code null}.\n@param in       the input stream to wrap; must not be {@code null}.\n@param mimeType the MIME type, or {@code null} if unknown.",
+    "ja": "{@link InputStream}に基づく{@code StreamSource}を構築します。MIME型はわかっていて、\n文字エンコーディングは無く、長さは不明とします。\n\n@param uri      このソースに結び付けるURI。{@code null}は\n                指定できません。\n@param in       包む入力ストリーム。{@code null}は指定できません。\n@param mimeType MIME型。不明の場合は{@code null}。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.stream.StreamSource#StreamSource(URI,InputStream,String,String)": {
+    "hash": "5d9130bcf8c1fbb7",
+    "en": "Constructs a {@code StreamSource} backed by an {@link InputStream} with an\nunknown content length.\n\n@param uri      the URI to associate with this source; must not be\n                {@code null}.\n@param in       the input stream to wrap; must not be {@code null}.\n@param mimeType the MIME type, or {@code null} if unknown.\n@param encoding the character encoding, or {@code null} if binary.\n@throws UnsupportedEncodingException if the encoding is not supported.",
+    "ja": "{@link InputStream}に基づく、内容の長さが不明な{@code StreamSource}を\n構築します。\n\n@param uri      このソースに結び付けるURI。{@code null}は\n                指定できません。\n@param in       包む入力ストリーム。{@code null}は指定できません。\n@param mimeType MIME型。不明の場合は{@code null}。\n@param encoding 文字エンコーディング。バイナリの場合は{@code null}。\n@throws UnsupportedEncodingException エンコーディングに対応していない場合。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.stream.StreamSource#StreamSource(URI,InputStream,String,String,long)": {
+    "hash": "94a9514fd66b28fc",
+    "en": "Constructs a {@code StreamSource} backed by an {@link InputStream} with all\nattributes specified explicitly.\n\n@param uri      the URI to associate with this source; must not be\n                {@code null}.\n@param in       the input stream to wrap; must not be {@code null}.\n@param mimeType the MIME type of the content, or {@code null} if unknown.\n@param encoding the character encoding, or {@code null} if binary.\n@param length   the content length in bytes, or {@code -1} if unknown.\n@throws UnsupportedEncodingException if the encoding is not supported.",
+    "ja": "全ての属性を明示して、{@link InputStream}に基づく{@code StreamSource}を\n構築します。\n\n@param uri      このソースに結び付けるURI。{@code null}は\n                指定できません。\n@param in       包む入力ストリーム。{@code null}は指定できません。\n@param mimeType 内容のMIME型。不明の場合は{@code null}。\n@param encoding 文字エンコーディング。バイナリの場合は{@code null}。\n@param length   内容のバイト長。不明の場合は{@code -1}。\n@throws UnsupportedEncodingException エンコーディングに対応していない場合。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.stream.StreamSource#StreamSource(URI,InputStream,String,long)": {
+    "hash": "34299ce128a98065",
+    "en": "Constructs a {@code StreamSource} backed by an {@link InputStream} without\na character encoding.\n\n@param uri      the URI to associate with this source; must not be\n                {@code null}.\n@param in       the input stream to wrap; must not be {@code null}.\n@param mimeType the MIME type of the content, or {@code null} if unknown.\n@param length   the content length in bytes, or {@code -1} if unknown.",
+    "ja": "{@link InputStream}に基づく、文字エンコーディングの無い{@code StreamSource}を\n構築します。\n\n@param uri      このソースに結び付けるURI。{@code null}は\n                指定できません。\n@param in       包む入力ストリーム。{@code null}は指定できません。\n@param mimeType 内容のMIME型。不明の場合は{@code null}。\n@param length   内容のバイト長。不明の場合は{@code -1}。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.stream.StreamSource#StreamSource(URI,Reader)": {
+    "hash": "9b2c219c81d4b2ad",
+    "en": "Constructs a {@code StreamSource} backed by a {@link Reader} with no\nmetadata.\n\n@param uri    the URI to associate with this source; must not be\n              {@code null}.\n@param reader the character reader to wrap; must not be {@code null}.\n@throws IOException if an I/O error occurs while marking the reader.",
+    "ja": "{@link Reader}に基づく、メタデータの無い{@code StreamSource}を構築します。\n\n@param uri    このソースに結び付けるURI。{@code null}は\n              指定できません。\n@param reader 包む文字のリーダ。{@code null}は指定できません。\n@throws IOException リーダにマークを付ける際に入出力エラーが発生した場合。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.stream.StreamSource#StreamSource(URI,Reader,String)": {
+    "hash": "d5e7968a0217bd93",
+    "en": "Constructs a {@code StreamSource} backed by a {@link Reader} with a known\nMIME type and unknown length.\n\n@param uri      the URI to associate with this source; must not be\n                {@code null}.\n@param reader   the character reader to wrap; must not be {@code null}.\n@param mimeType the MIME type, or {@code null} if unknown.\n@throws IOException if an I/O error occurs while marking the reader.",
+    "ja": "{@link Reader}に基づく、MIME型がわかっていて長さが不明な{@code StreamSource}を\n構築します。\n\n@param uri      このソースに結び付けるURI。{@code null}は\n                指定できません。\n@param reader   包む文字のリーダ。{@code null}は指定できません。\n@param mimeType MIME型。不明の場合は{@code null}。\n@throws IOException リーダにマークを付ける際に入出力エラーが発生した場合。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.stream.StreamSource#StreamSource(URI,Reader,String,String)": {
+    "hash": "c942007fcf59af81",
+    "en": "Constructs a {@code StreamSource} backed by a {@link Reader} with an unknown\ncontent length.\n\n@param uri      the URI to associate with this source; must not be\n                {@code null}.\n@param reader   the character reader to wrap; must not be {@code null}.\n@param mimeType the MIME type, or {@code null} if unknown.\n@param encoding the declared character encoding, or {@code null} if unknown.\n@throws IOException if an I/O error occurs while marking the reader.",
+    "ja": "{@link Reader}に基づく、内容の長さが不明な{@code StreamSource}を\n構築します。\n\n@param uri      このソースに結び付けるURI。{@code null}は\n                指定できません。\n@param reader   包む文字のリーダ。{@code null}は指定できません。\n@param mimeType MIME型。不明の場合は{@code null}。\n@param encoding 宣言された文字エンコーディング。不明の場合は{@code null}。\n@throws IOException リーダにマークを付ける際に入出力エラーが発生した場合。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.stream.StreamSource#StreamSource(URI,Reader,String,String,long)": {
+    "hash": "f78f27f40f989a52",
+    "en": "Constructs a {@code StreamSource} backed by a {@link Reader} with all\nattributes specified explicitly.\n\n@param uri      the URI to associate with this source; must not be\n                {@code null}.\n@param reader   the character reader to wrap; must not be {@code null}.\n@param mimeType the MIME type of the content, or {@code null} if unknown.\n@param encoding the declared character encoding, or {@code null} if unknown.\n@param length   the content length in bytes, or {@code -1} if unknown.\n@throws IOException if an I/O error occurs while marking the reader.",
+    "ja": "全ての属性を明示して、{@link Reader}に基づく{@code StreamSource}を\n構築します。\n\n@param uri      このソースに結び付けるURI。{@code null}は\n                指定できません。\n@param reader   包む文字のリーダ。{@code null}は指定できません。\n@param mimeType 内容のMIME型。不明の場合は{@code null}。\n@param encoding 宣言された文字エンコーディング。不明の場合は{@code null}。\n@param length   内容のバイト長。不明の場合は{@code -1}。\n@throws IOException リーダにマークを付ける際に入出力エラーが発生した場合。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.stream.StreamSource#exists()": {
+    "hash": "5e23b2c98ca45751",
+    "en": "Always returns {@code true} — a stream-based source always has content.\n\n@return {@code true}.",
+    "ja": "常に{@code true}を返します。ストリームに基づくソースには常に内容があります。\n\n@return {@code true}。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.stream.StreamSource#getEncoding()": {
+    "hash": "c9ac7a75f42fe1fb",
+    "en": "Returns the character encoding supplied at construction time.\n\n@return the encoding name, or {@code null} if unknown or binary.",
+    "ja": "構築時に渡された文字エンコーディングを返します。\n\n@return エンコーディング名。不明またはバイナリの場合は{@code null}。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.stream.StreamSource#getFile()": {
+    "hash": "ef482ab53c18394e",
+    "en": "Always throws {@link UnsupportedOperationException} — stream-based sources\nare not backed by a local file.\n\n@throws UnsupportedOperationException always.",
+    "ja": "常に{@link UnsupportedOperationException}を投げます。ストリームに基づくソースは\nローカルファイルに基づきません。\n\n@throws UnsupportedOperationException 常に投げます。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.stream.StreamSource#getInputStream()": {
+    "hash": "bb37ea06f5b8c6f7",
+    "en": "Returns the buffered {@link InputStream} for this source, reset to the\nbeginning.  The stream supports repeated reads up to {@value #MARK_LIMIT}\nbytes from its initial position.\n\n@return the reusable input stream; never {@code null}.\n@throws UnsupportedOperationException if this source was constructed with a\n                                       {@link Reader} rather than a stream.\n@throws IOException if an I/O error occurs while resetting the stream.",
+    "ja": "このソースのバッファ付きの{@link InputStream}を、先頭に戻して返します。この\nストリームは、最初の位置から{@value #MARK_LIMIT}バイトまでなら繰り返し\n読めます。\n\n@return 再利用できる入力ストリーム。{@code null}にはなりません。\n@throws UnsupportedOperationException このソースがストリームではなく\n                                       {@link Reader}で構築された場合。\n@throws IOException ストリームを先頭に戻す際に入出力エラーが発生した場合。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.stream.StreamSource#getLength()": {
+    "hash": "e2a5fe2709f062b8",
+    "en": "Returns the content length supplied at construction time.\n\n@return the content length in bytes, or {@code -1} if unknown.\n@throws IOException never thrown.",
+    "ja": "構築時に渡された内容の長さを返します。\n\n@return 内容のバイト長。不明の場合は{@code -1}。\n@throws IOException 投げられることはありません。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.stream.StreamSource#getMimeType()": {
+    "hash": "9705850665e4b3ac",
+    "en": "Returns the MIME type supplied at construction time.\n\n@return the MIME type string, or {@code null} if unknown.",
+    "ja": "構築時に渡されたMIME型を返します。\n\n@return MIME型の文字列。不明の場合は{@code null}。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.stream.StreamSource#getReader()": {
+    "hash": "693c0cf4641894f5",
+    "en": "Returns a character {@link Reader} for this source.  If this source was\nconstructed with a {@link Reader}, that reader is reset and returned;\notherwise the buffered stream is wrapped with the known encoding.\n\n@return a character reader positioned at the beginning of the content.\n@throws UnsupportedOperationException if no {@link Reader} was provided and\n                                       no character encoding is known.\n@throws IOException if an I/O error occurs while resetting the reader.",
+    "ja": "このソースの文字の{@link Reader}を返します。このソースが{@link Reader}で\n構築された場合は、そのリーダを先頭に戻して返します。そうでない場合は、\nバッファ付きのストリームをわかっているエンコーディングで包みます。\n\n@return 内容の先頭に位置する文字のリーダ。\n@throws UnsupportedOperationException {@link Reader}が渡されておらず、\n                                       文字エンコーディングも不明の場合。\n@throws IOException リーダを先頭に戻す際に入出力エラーが発生した場合。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.stream.StreamSource#getURI()": {
+    "hash": "c32cef23e8373203",
+    "en": "Returns the URI associated with this source.\n\n@return the URI; never {@code null}.",
+    "ja": "このソースに結び付いたURIを返します。\n\n@return URI。{@code null}にはなりません。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.stream.StreamSource#getValidity()": {
+    "hash": "21d9e81db6284581",
+    "en": "Returns {@link UnknownSourceValidity#SHARED_INSTANCE} because a stream has\nno stable modification-time concept.\n\n@return the shared unknown-validity instance; never {@code null}.",
+    "ja": "ストリームには安定した更新時刻という概念が無いため、\n{@link UnknownSourceValidity#SHARED_INSTANCE}を返します。\n\n@return 有効性が不明であることを表す共有のインスタンス。{@code null}にはなりません。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.stream.StreamSource#isInputStream()": {
+    "hash": "db86da6da22e06f2",
+    "en": "Returns {@code true} if this source was constructed with an\n{@link InputStream}.\n\n@return {@code true} if a binary stream is available.",
+    "ja": "このソースが{@link InputStream}で構築された場合は{@code true}を返します。\n\n@return バイナリストリームを使える場合は{@code true}。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.stream.StreamSource#isReader()": {
+    "hash": "2fbf1086b3451414",
+    "en": "Returns {@code true} if this source was constructed with a {@link Reader}\nor if a character encoding is known (so a reader can be derived from the\ninput stream).\n\n@return {@code true} if a character reader is available.",
+    "ja": "このソースが{@link Reader}で構築された場合、または文字エンコーディングが\nわかっている場合(入力ストリームからリーダを作れるため)は{@code true}を\n返します。\n\n@return 文字のリーダを使える場合は{@code true}。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.url.URLSource": {
+    "hash": "e67c10f6029881df",
+    "en": "A {@link net.zamasoft.zstream.resolver.Source Source} implementation that\nretrieves data from a {@link java.net.URL}.\n\n<p>If the URL uses the {@code file} scheme the content is read directly from\nthe file system; for all other schemes a {@link java.net.URLConnection} is\nopened lazily on the first content or metadata access.\n\n<p>The connection is re-established automatically each time\n{@link #getInputStream()} is called so that the stream is always positioned\nat the beginning of the content.  Validity is based on the connection's\n{@code Last-Modified} timestamp.\n\n@author MIYABE Tatsuhiko\n@since 1.0",
+    "ja": "{@link java.net.URL}からデータを取得する\n{@link net.zamasoft.zstream.resolver.Source Source}の実装です。\n\n<p>URLが{@code file}スキームの場合は、内容をファイルシステムから直接読みます。\nそれ以外の全てのスキームでは、内容またはメタデータに最初にアクセスした時点で\n{@link java.net.URLConnection}を遅延して開きます。\n\n<p>{@link #getInputStream()}を呼ぶたびに接続を自動的に張り直すため、\nストリームは常に内容の先頭に位置します。有効性は接続の\n{@code Last-Modified}の時刻に基づきます。\n\n@author MIYABE Tatsuhiko\n@since 1.0"
+  },
+  "net.zamasoft.zstream.resolver.protocol.url.URLSource#URLSource(URI)": {
+    "hash": "06a7a1526df17e27",
+    "en": "Constructs a {@code URLSource} from a {@link URI}.  Both MIME type and\ncharacter encoding are determined automatically.\n\n@param uri the URI; must not be {@code null}.\n@throws MalformedURLException if the URI cannot be converted to a URL.",
+    "ja": "{@link URI}から{@code URLSource}を構築します。MIME型と文字エンコーディングは\nどちらも自動的に決めます。\n\n@param uri URI。{@code null}は指定できません。\n@throws MalformedURLException URIをURLに変換できない場合。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.url.URLSource#URLSource(URI,String)": {
+    "hash": "1b6be1397139f3b9",
+    "en": "Constructs a {@code URLSource} from a {@link URI} with an explicit MIME type.\nThe character encoding is left unknown.\n\n@param uri      the URI; must not be {@code null}.\n@param mimeType the MIME type, or {@code null} for auto-detection.\n@throws MalformedURLException if the URI cannot be converted to a URL.",
+    "ja": "MIME型を明示して、{@link URI}から{@code URLSource}を構築します。\n文字エンコーディングは不明のままです。\n\n@param uri      URI。{@code null}は指定できません。\n@param mimeType MIME型。自動判定する場合は{@code null}。\n@throws MalformedURLException URIをURLに変換できない場合。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.url.URLSource#URLSource(URI,String,String)": {
+    "hash": "78ace2720261c51f",
+    "en": "Constructs a {@code URLSource} from a {@link URI} with an explicit MIME type\nand character encoding.  The URL is derived from the URI.\n\n@param uri      the URI; must not be {@code null}.\n@param mimeType the MIME type, or {@code null} for auto-detection.\n@param encoding the character encoding, or {@code null} if unknown.\n@throws MalformedURLException if the URI cannot be converted to a URL.",
+    "ja": "MIME型と文字エンコーディングを明示して、{@link URI}から{@code URLSource}を\n構築します。URLはURIから導きます。\n\n@param uri      URI。{@code null}は指定できません。\n@param mimeType MIME型。自動判定する場合は{@code null}。\n@param encoding 文字エンコーディング。不明の場合は{@code null}。\n@throws MalformedURLException URIをURLに変換できない場合。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.url.URLSource#URLSource(URI,URL,String,String)": {
+    "hash": "c90de8cad1fbe1aa",
+    "en": "Constructs a {@code URLSource} with all attributes specified explicitly.\n\n@param uri      the URI to associate with this source; must not be\n                {@code null}.\n@param url      the backing URL; must not be {@code null}.\n@param mimeType the MIME type, or {@code null} for auto-detection.\n@param encoding the character encoding, or {@code null} if unknown.",
+    "ja": "全ての属性を明示して{@code URLSource}を構築します。\n\n@param uri      このソースに結び付けるURI。{@code null}は\n                指定できません。\n@param url      基になるURL。{@code null}は指定できません。\n@param mimeType MIME型。自動判定する場合は{@code null}。\n@param encoding 文字エンコーディング。不明の場合は{@code null}。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.url.URLSource#URLSource(URL)": {
+    "hash": "a28b3322ca561acc",
+    "en": "Constructs a {@code URLSource} from a {@link URL}.  Both MIME type and\ncharacter encoding are determined automatically.\n\n@param url the backing URL; must not be {@code null}.\n@throws URISyntaxException if the URL cannot be converted to a URI.",
+    "ja": "{@link URL}から{@code URLSource}を構築します。MIME型と文字エンコーディングは\nどちらも自動的に決めます。\n\n@param url 基になるURL。{@code null}は指定できません。\n@throws URISyntaxException URLをURIに変換できない場合。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.url.URLSource#URLSource(URL,String)": {
+    "hash": "dc850abbfb5870ce",
+    "en": "Constructs a {@code URLSource} from a {@link URL} with an explicit MIME type.\nThe character encoding is left unknown.\n\n@param url      the backing URL; must not be {@code null}.\n@param mimeType the MIME type, or {@code null} for auto-detection.\n@throws URISyntaxException if the URL cannot be converted to a URI.",
+    "ja": "MIME型を明示して、{@link URL}から{@code URLSource}を構築します。\n文字エンコーディングは不明のままです。\n\n@param url      基になるURL。{@code null}は指定できません。\n@param mimeType MIME型。自動判定する場合は{@code null}。\n@throws URISyntaxException URLをURIに変換できない場合。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.url.URLSource#URLSource(URL,String,String)": {
+    "hash": "4664db0792f966a5",
+    "en": "Constructs a {@code URLSource} from a {@link URL} with an explicit MIME type\nand character encoding.  The URI is derived from the URL.\n\n@param url      the backing URL; must not be {@code null}.\n@param mimeType the MIME type, or {@code null} for auto-detection.\n@param encoding the character encoding, or {@code null} if unknown.\n@throws URISyntaxException if the URL cannot be converted to a URI.",
+    "ja": "MIME型と文字エンコーディングを明示して、{@link URL}から{@code URLSource}を\n構築します。URIはURLから導きます。\n\n@param url      基になるURL。{@code null}は指定できません。\n@param mimeType MIME型。自動判定する場合は{@code null}。\n@param encoding 文字エンコーディング。不明の場合は{@code null}。\n@throws URISyntaxException URLをURIに変換できない場合。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.url.URLSource#close()": {
+    "hash": "56efb6a46714aff4",
+    "en": "Closes the currently open connection and input stream, if any.  After this\ncall the source may be re-opened by calling {@link #getInputStream()} again.",
+    "ja": "現在開いている接続と入力ストリームがあれば閉じます。この呼び出しの後も、\n{@link #getInputStream()}を再び呼び出せばソースを開き直せます。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.url.URLSource#exists()": {
+    "hash": "5fcdec9f12ed441b",
+    "en": "Returns {@code true} if the resource exists.  For {@code file:} URIs the\nfile system is checked; for all other URIs {@code true} is returned\nunconditionally (a connection is not opened just to check existence).\n\n@return {@code true} if the resource is expected to exist.\n@throws IOException if an I/O error occurs.",
+    "ja": "リソースが存在する場合は{@code true}を返します。{@code file:} URIでは\nファイルシステムを確かめます。それ以外の全てのURIでは無条件に{@code true}を\n返します(存在を確かめるためだけに接続を開くことはしません)。\n\n@return リソースが存在すると見込まれる場合は{@code true}。\n@throws IOException 入出力エラーが発生した場合。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.url.URLSource#getEncoding()": {
+    "hash": "be81ebb61eaef8d5",
+    "en": "Returns the character encoding supplied at construction time.\n\n@return the encoding name, or {@code null} if unknown.",
+    "ja": "構築時に渡された文字エンコーディングを返します。\n\n@return エンコーディング名。不明の場合は{@code null}。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.url.URLSource#getFile()": {
+    "hash": "fe7f91e26b282d78",
+    "en": "Returns the local {@link File} corresponding to this URL.  When the URI\nscheme is {@code file} the file is derived directly from the URI; otherwise\nthe URI path component is used as a best-effort fallback.\n\n@return a {@link File} for this source; never {@code null}.",
+    "ja": "このURLに対応するローカルの{@link File}を返します。URIのスキームが\n{@code file}の場合は、URIから直接ファイルを導きます。それ以外の場合は、\nできる限りの代替としてURIのパス部分を使います。\n\n@return このソースの{@link File}。{@code null}にはなりません。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.url.URLSource#getInputStream()": {
+    "hash": "a946a646c11e731c",
+    "en": "Opens and returns a binary {@link InputStream} for the URL content.  Any\npreviously opened connection is discarded first.  For {@code file:} URIs a\n{@link java.io.FileInputStream} is returned directly; for all other URIs a\n{@link java.net.URLConnection} is opened.\n\n@return a new {@link InputStream} positioned at the beginning of the content.\n@throws IOException if an I/O error occurs while opening the connection.",
+    "ja": "URLの内容を読むバイナリの{@link InputStream}を開いて返します。以前に開いた\n接続があれば先に破棄します。{@code file:} URIでは\n{@link java.io.FileInputStream}を直接返し、それ以外の全てのURIでは\n{@link java.net.URLConnection}を開きます。\n\n@return 内容の先頭に位置する新しい{@link InputStream}。\n@throws IOException 接続を開く際に入出力エラーが発生した場合。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.url.URLSource#getLength()": {
+    "hash": "560d4389959e01b2",
+    "en": "Returns the byte length of the content.  For {@code file:} URIs the file\nsize is returned directly; for all other URIs the connection's\n{@code Content-Length} is used, opening a connection if necessary.\n\n@return the content length in bytes, or {@code -1} if unknown.\n@throws IOException if an I/O error occurs while connecting.",
+    "ja": "内容のバイト長を返します。{@code file:} URIではファイルの大きさを直接\n返します。それ以外の全てのURIでは接続の{@code Content-Length}を使い、\n必要なら接続を開きます。\n\n@return 内容のバイト長。不明の場合は{@code -1}。\n@throws IOException 接続の際に入出力エラーが発生した場合。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.url.URLSource#getMimeType()": {
+    "hash": "bc9963a9a76a96cd",
+    "en": "Returns the MIME type of the resource.  For {@code file:} URIs the type is\ninferred from the file extension; for all other URIs it is retrieved from the\nconnection's {@code Content-Type} header.\n\n@return the MIME type string, or {@code null} if it cannot be determined.\n@throws IOException if an I/O error occurs while connecting.",
+    "ja": "リソースのMIME型を返します。{@code file:} URIではファイルの拡張子から型を\n推定します。それ以外の全てのURIでは接続の{@code Content-Type}ヘッダから\n取得します。\n\n@return MIME型の文字列。判定できない場合は{@code null}。\n@throws IOException 接続の際に入出力エラーが発生した場合。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.url.URLSource#getReader()": {
+    "hash": "636c2e5d3f27befc",
+    "en": "Returns a character {@link Reader} for the URL content decoded with the\nencoding supplied at construction time.\n\n@return a {@link Reader} positioned at the beginning of the content.\n@throws UnsupportedOperationException if no character encoding is known.\n@throws IOException if an I/O error occurs while opening the connection.",
+    "ja": "構築時に渡されたエンコーディングでURLの内容をデコードする、文字の\n{@link Reader}を返します。\n\n@return 内容の先頭に位置する{@link Reader}。\n@throws UnsupportedOperationException 文字エンコーディングが不明の場合。\n@throws IOException 接続を開く際に入出力エラーが発生した場合。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.url.URLSource#getValidity()": {
+    "hash": "079b1feab0e15d25",
+    "en": "Returns a {@link SourceValidity} based on the connection's\n{@code Last-Modified} timestamp.  A new connection is opened if necessary.\n\n@return a validity instance; never {@code null}.\n@throws IOException if an I/O error occurs while connecting.",
+    "ja": "接続の{@code Last-Modified}の時刻に基づく{@link SourceValidity}を返します。\n必要なら新しい接続を開きます。\n\n@return 有効性のインスタンス。{@code null}にはなりません。\n@throws IOException 接続の際に入出力エラーが発生した場合。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.url.URLSource#isFile()": {
+    "hash": "7d236cf625c5f0e4",
+    "en": "Returns {@code true} if the URI uses the {@code file} scheme.\n\n@return {@code true} if this source is backed by the local file system.\n@throws IOException never thrown.",
+    "ja": "URIが{@code file}スキームの場合は{@code true}を返します。\n\n@return このソースがローカルのファイルシステムに基づく場合は{@code true}。\n@throws IOException 投げられることはありません。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.url.URLSource#isInputStream()": {
+    "hash": "e1221c072b3cfeda",
+    "en": "Always returns {@code true} — URL content is always accessible as a binary\nstream.\n\n@return {@code true}.\n@throws IOException never thrown.",
+    "ja": "常に{@code true}を返します。URLの内容は常にバイナリストリームとして\n読めます。\n\n@return {@code true}。\n@throws IOException 投げられることはありません。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.url.URLSource#isReader()": {
+    "hash": "1acf829218b7503d",
+    "en": "Returns {@code true} if a character encoding was supplied at construction\ntime, meaning the content can be read as a character stream.\n\n@return {@code true} if a character encoding is known.\n@throws IOException never thrown.",
+    "ja": "構築時に文字エンコーディングが渡された場合、つまり内容を文字ストリームとして\n読める場合は{@code true}を返します。\n\n@return 文字エンコーディングがわかっている場合は{@code true}。\n@throws IOException 投げられることはありません。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.url.URLSourceResolver": {
+    "hash": "8107fd725c2bac0b",
+    "en": "A {@link SourceResolver} implementation that resolves any URI that can be\nconverted to a {@link java.net.URL} using the standard Java URL handling\nmechanism.\n\n<p>This resolver acts as a generic fallback and delegates connection\nmanagement to the JVM's built-in URL infrastructure ({@link java.net.URLConnection}).\nIt is typically used as the {@link CompositeSourceResolver#getDefaultSourceResolver()\ndefault resolver} in a composite configuration.\n\n@author MIYABE Tatsuhiko\n@since 1.0",
+    "ja": "Java標準のURL処理の仕組みで{@link java.net.URL}に変換できる、あらゆるURIを\n解決する{@link SourceResolver}の実装です。\n\n<p>このリゾルバは汎用の代替として働き、接続の管理はJVMに組み込まれたURLの\n仕組み({@link java.net.URLConnection})に任せます。通常は、複合構成での\n{@link CompositeSourceResolver#getDefaultSourceResolver() デフォルトのリゾルバ}として使います。\n\n@author MIYABE Tatsuhiko\n@since 1.0"
+  },
+  "net.zamasoft.zstream.resolver.protocol.url.URLSourceResolver#release(Source)": {
+    "hash": "85a2a1b6793e16b7",
+    "en": "Releases the given source by closing its underlying URL connection.\n\n@param source the source to release; must be a {@link URLSource} obtained\n              from this resolver.",
+    "ja": "指定したソースの基になるURL接続を閉じて、ソースを解放します。\n\n@param source 解放するソース。このリゾルバから得た{@link URLSource}である\n              必要があります。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.url.URLSourceResolver#resolve(URI)": {
+    "hash": "d89d50b52e4b102e",
+    "en": "Resolves the given URI by converting it to a {@link java.net.URL} and\nwrapping it in a {@link URLSource}.\n\n@param uri the URI to resolve; must not be {@code null} and must be\n           convertible to a URL.\n@return a new {@link URLSource} for the resource.\n@throws IOException if the URI cannot be converted to a URL or an I/O error\n                    occurs.",
+    "ja": "指定したURIを{@link java.net.URL}に変換し、{@link URLSource}で包んで\n解決します。\n\n@param uri 解決するURI。{@code null}は指定できず、URLに\n           変換できる必要があります。\n@return リソースの新しい{@link URLSource}。\n@throws IOException URIをURLに変換できない場合、または入出力エラーが\n                    発生した場合。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.zip.ZIPFileSource": {
+    "hash": "5ce5f6a773061cba",
+    "en": "A {@link net.zamasoft.zstream.resolver.Source Source} implementation that\nreads an entry from a ZIP archive.\n\n<p>The ZIP entry is located by path at construction time.  If no matching\nentry is found {@link #exists()} returns {@code false} and\n{@link #getInputStream()} throws {@link java.io.FileNotFoundException}.\n\n<p>Validity is based on the last-modified timestamp of the underlying ZIP\nfile, not on the individual entry.\n\n@author MIYABE Tatsuhiko\n@since 1.0",
+    "ja": "ZIPアーカイブのエントリを読む\n{@link net.zamasoft.zstream.resolver.Source Source}の実装です。\n\n<p>ZIPのエントリは構築時にパスで探します。一致するエントリが見つからない場合、\n{@link #exists()}は{@code false}を返し、\n{@link #getInputStream()}は{@link java.io.FileNotFoundException}を投げます。\n\n<p>有効性は個々のエントリではなく、基になるZIPファイルの最終更新時刻に\n基づきます。\n\n@author MIYABE Tatsuhiko\n@since 1.0"
+  },
+  "net.zamasoft.zstream.resolver.protocol.zip.ZIPFileSource#ZIPFileSource(ZipFile,String,URI)": {
+    "hash": "99d72d4988b8fb95",
+    "en": "Constructs a {@code ZIPFileSource} with an explicit entry path but without\nspecifying MIME type or character encoding.\n\n@param zip  the open ZIP archive; must not be {@code null}.\n@param path the entry path within the ZIP; must not be {@code null}.\n@param uri  the URI associated with this source; must not be {@code null}.",
+    "ja": "エントリのパスを明示し、MIME型と文字エンコーディングは指定せずに\n{@code ZIPFileSource}を構築します。\n\n@param zip  開いているZIPアーカイブ。{@code null}は指定できません。\n@param path ZIP内のエントリのパス。{@code null}は指定できません。\n@param uri  このソースに結び付けるURI。{@code null}は指定できません。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.zip.ZIPFileSource#ZIPFileSource(ZipFile,String,URI,String)": {
+    "hash": "bd64d239f3b8b644",
+    "en": "Constructs a {@code ZIPFileSource} with an explicit entry path and MIME\ntype, without a character encoding.\n\n@param zip      the open ZIP archive; must not be {@code null}.\n@param path     the entry path within the ZIP; must not be {@code null}.\n@param uri      the URI associated with this source; must not be\n                {@code null}.\n@param mimeType the MIME type, or {@code null} for auto-detection.",
+    "ja": "エントリのパスとMIME型を明示し、文字エンコーディングは無しで\n{@code ZIPFileSource}を構築します。\n\n@param zip      開いているZIPアーカイブ。{@code null}は指定できません。\n@param path     ZIP内のエントリのパス。{@code null}は指定できません。\n@param uri      このソースに結び付けるURI。{@code null}は\n                指定できません。\n@param mimeType MIME型。自動判定する場合は{@code null}。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.zip.ZIPFileSource#ZIPFileSource(ZipFile,String,URI,String,String)": {
+    "hash": "44cd7fec3ecaeafb",
+    "en": "Constructs a {@code ZIPFileSource} with all attributes specified explicitly.\nIf {@code path} is {@code null} the entry path is decoded from the URI's\nscheme-specific part.\n\n@param zip      the open ZIP archive; must not be {@code null}.\n@param path     the entry path within the ZIP, or {@code null} to derive it\n                from the URI.\n@param uri      the URI associated with this source; must not be\n                {@code null}.\n@param mimeType the MIME type, or {@code null} for auto-detection.\n@param encoding the character encoding, or {@code null} if unknown.",
+    "ja": "全ての属性を明示して{@code ZIPFileSource}を構築します。\n{@code path}が{@code null}の場合は、URIのスキーム固有部分からエントリのパスを\nデコードします。\n\n@param zip      開いているZIPアーカイブ。{@code null}は指定できません。\n@param path     ZIP内のエントリのパス。URIから導く場合は\n                {@code null}。\n@param uri      このソースに結び付けるURI。{@code null}は\n                指定できません。\n@param mimeType MIME型。自動判定する場合は{@code null}。\n@param encoding 文字エンコーディング。不明の場合は{@code null}。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.zip.ZIPFileSource#ZIPFileSource(ZipFile,URI)": {
+    "hash": "50b18e5eb24c98e9",
+    "en": "Constructs a {@code ZIPFileSource} with neither MIME type nor encoding\nspecified explicitly.\n\n@param zip the open ZIP archive; must not be {@code null}.\n@param uri the URI used to derive the entry path; must not be {@code null}.\n@throws IOException if an I/O error occurs during construction.",
+    "ja": "MIME型もエンコーディングも明示せずに{@code ZIPFileSource}を構築します。\n\n@param zip 開いているZIPアーカイブ。{@code null}は指定できません。\n@param uri エントリのパスを導くURI。{@code null}は指定できません。\n@throws IOException 構築中に入出力エラーが発生した場合。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.zip.ZIPFileSource#ZIPFileSource(ZipFile,URI,String)": {
+    "hash": "a645e2da7b9287c8",
+    "en": "Constructs a {@code ZIPFileSource} with a specified MIME type and no\nexplicit character encoding.\n\n@param zip      the open ZIP archive; must not be {@code null}.\n@param uri      the URI used to derive the entry path; must not be\n                {@code null}.\n@param mimeType the MIME type, or {@code null} for auto-detection.",
+    "ja": "MIME型を指定し、文字エンコーディングは明示せずに{@code ZIPFileSource}を\n構築します。\n\n@param zip      開いているZIPアーカイブ。{@code null}は指定できません。\n@param uri      エントリのパスを導くURI。{@code null}は\n                指定できません。\n@param mimeType MIME型。自動判定する場合は{@code null}。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.zip.ZIPFileSource#ZIPFileSource(ZipFile,URI,String,String)": {
+    "hash": "38b5d41740ca7535",
+    "en": "Constructs a {@code ZIPFileSource} whose entry path is derived from the URI.\n\n@param zip      the open ZIP archive; must not be {@code null}.\n@param uri      the URI used to derive the entry path; must not be\n                {@code null}.\n@param mimeType the MIME type, or {@code null} for auto-detection.\n@param encoding the character encoding, or {@code null} if unknown.",
+    "ja": "エントリのパスをURIから導く{@code ZIPFileSource}を構築します。\n\n@param zip      開いているZIPアーカイブ。{@code null}は指定できません。\n@param uri      エントリのパスを導くURI。{@code null}は\n                指定できません。\n@param mimeType MIME型。自動判定する場合は{@code null}。\n@param encoding 文字エンコーディング。不明の場合は{@code null}。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.zip.ZIPFileSource#exists()": {
+    "hash": "becfd93d71c3d5f3",
+    "en": "Returns {@code true} if a {@link ZipEntry} matching the requested path was\nfound in the ZIP archive.\n\n@return {@code true} if the entry exists; {@code false} otherwise.\n@throws IOException if an I/O error occurs.",
+    "ja": "要求したパスに一致する{@link ZipEntry}がZIPアーカイブ内に見つかった場合は\n{@code true}を返します。\n\n@return エントリが存在する場合は{@code true}、そうでなければ{@code false}。\n@throws IOException 入出力エラーが発生した場合。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.zip.ZIPFileSource#getEncoding()": {
+    "hash": "be81ebb61eaef8d5",
+    "en": "Returns the character encoding supplied at construction time.\n\n@return the encoding name, or {@code null} if unknown.",
+    "ja": "構築時に渡された文字エンコーディングを返します。\n\n@return エンコーディング名。不明の場合は{@code null}。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.zip.ZIPFileSource#getFile()": {
+    "hash": "5182a0819616ac17",
+    "en": "Always throws {@link UnsupportedOperationException} — ZIP entries are not\nbacked by a local file.\n\n@throws UnsupportedOperationException always.",
+    "ja": "常に{@link UnsupportedOperationException}を投げます。ZIPのエントリは\nローカルファイルに基づきません。\n\n@throws UnsupportedOperationException 常に投げます。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.zip.ZIPFileSource#getInputStream()": {
+    "hash": "d1008ee4f33a2efc",
+    "en": "Opens and returns a binary {@link InputStream} for the ZIP entry content.\n\n@return the entry's input stream; never {@code null}.\n@throws java.io.FileNotFoundException if the entry does not exist in the\n                                       ZIP archive.\n@throws IOException if an I/O error occurs while reading the ZIP file.",
+    "ja": "ZIPのエントリの内容を読むバイナリの{@link InputStream}を開いて返します。\n\n@return エントリの入力ストリーム。{@code null}にはなりません。\n@throws java.io.FileNotFoundException エントリがZIPアーカイブ内に\n                                       存在しない場合。\n@throws IOException ZIPファイルの読み込み中に入出力エラーが発生した場合。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.zip.ZIPFileSource#getLength()": {
+    "hash": "fd051881f0edcfa4",
+    "en": "Returns the uncompressed byte length of the ZIP entry.\n\n@return the uncompressed size in bytes, or {@code -1} if unknown, or\n        {@code 0} if the entry does not exist.\n@throws IOException if an I/O error occurs.",
+    "ja": "ZIPのエントリの圧縮前のバイト長を返します。\n\n@return 圧縮前の大きさ(バイト単位)。不明の場合は{@code -1}、\n        エントリが存在しない場合は{@code 0}。\n@throws IOException 入出力エラーが発生した場合。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.zip.ZIPFileSource#getMimeType()": {
+    "hash": "746cb7323adf12e5",
+    "en": "Returns the MIME type of the ZIP entry, auto-detected from the entry name's\nextension when not supplied at construction time\n({@link MimeTypes#fromFileName}).\n\n@return the MIME type string, or {@code null} if it cannot be determined.\n@throws IOException if an I/O error occurs.",
+    "ja": "ZIPのエントリのMIME型を返します。構築時に渡されなかった場合は、エントリ名の\n拡張子から自動判定します\n({@link MimeTypes#fromFileName})。\n\n@return MIME型の文字列。判定できない場合は{@code null}。\n@throws IOException 入出力エラーが発生した場合。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.zip.ZIPFileSource#getReader()": {
+    "hash": "6fa1d8b62b942992",
+    "en": "Returns a character {@link Reader} for the ZIP entry decoded with the\nencoding supplied at construction time.\n\n@return a {@link Reader} positioned at the beginning of the entry.\n@throws UnsupportedOperationException if no character encoding is known.\n@throws IOException if an I/O error occurs.",
+    "ja": "構築時に渡されたエンコーディングでZIPのエントリをデコードする、文字の\n{@link Reader}を返します。\n\n@return エントリの先頭に位置する{@link Reader}。\n@throws UnsupportedOperationException 文字エンコーディングが不明の場合。\n@throws IOException 入出力エラーが発生した場合。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.zip.ZIPFileSource#getValidity()": {
+    "hash": "a18e81b9874132ef",
+    "en": "Returns a {@link SourceValidity} based on the last-modified timestamp of the\nunderlying ZIP file (not the individual entry).\n\n@return a validity instance; never {@code null}.\n@throws IOException if an I/O error occurs.",
+    "ja": "基になるZIPファイル(個々のエントリではない)の最終更新時刻に基づく\n{@link SourceValidity}を返します。\n\n@return 有効性のインスタンス。{@code null}にはなりません。\n@throws IOException 入出力エラーが発生した場合。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.zip.ZIPFileSource#isFile()": {
+    "hash": "8c31a9a3b7e4fc9c",
+    "en": "Always returns {@code false} — ZIP entries are not backed by a local file.\n\n@return {@code false}.\n@throws IOException never thrown.",
+    "ja": "常に{@code false}を返します。ZIPのエントリはローカルファイルに基づきません。\n\n@return {@code false}。\n@throws IOException 投げられることはありません。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.zip.ZIPFileSource#isInputStream()": {
+    "hash": "d3ce1993bfa4decf",
+    "en": "Always returns {@code true} — ZIP entry content is always accessible as a\nbinary stream.\n\n@return {@code true}.\n@throws IOException never thrown.",
+    "ja": "常に{@code true}を返します。ZIPのエントリの内容は常に\nバイナリストリームとして読めます。\n\n@return {@code true}。\n@throws IOException 投げられることはありません。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.zip.ZIPFileSource#isReader()": {
+    "hash": "d50ef2137d6221e5",
+    "en": "Returns {@code true} if a character encoding was supplied at construction\ntime, meaning the entry content can be read as a character stream.\n\n@return {@code true} if a character encoding is known.\n@throws IOException never thrown.",
+    "ja": "構築時に文字エンコーディングが渡された場合、つまりエントリの内容を\n文字ストリームとして読める場合は{@code true}を返します。\n\n@return 文字エンコーディングがわかっている場合は{@code true}。\n@throws IOException 投げられることはありません。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.zip.ZIPFileSourceResolver": {
+    "hash": "98d564364616b427",
+    "en": "A {@link SourceResolver} implementation that resolves URIs to entries within\na single ZIP archive.\n\n<p>The ZIP archive is supplied at construction time and is shared across all\n{@link ZIPFileSource} instances produced by this resolver.  The archive is\nnot closed by this resolver; callers are responsible for closing it when it\nis no longer needed.\n\n@author MIYABE Tatsuhiko\n@since 1.0",
+    "ja": "URIを1つのZIPアーカイブ内のエントリに解決する{@link SourceResolver}の\n実装です。\n\n<p>ZIPアーカイブは構築時に渡され、このリゾルバが生成する全ての\n{@link ZIPFileSource}で共有されます。このリゾルバはアーカイブを閉じません。\n不要になったら呼び出し側で閉じてください。\n\n@author MIYABE Tatsuhiko\n@since 1.0"
+  },
+  "net.zamasoft.zstream.resolver.protocol.zip.ZIPFileSourceResolver#ZIPFileSourceResolver(ZipFile)": {
+    "hash": "3bb98b131a5f42ae",
+    "en": "Constructs a {@code ZIPFileSourceResolver} backed by the given ZIP archive.\n\n@param zip the open ZIP archive to read from; must not be {@code null}.",
+    "ja": "指定したZIPアーカイブに基づく{@code ZIPFileSourceResolver}を構築します。\n\n@param zip 読み込み元の開いているZIPアーカイブ。{@code null}は指定できません。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.zip.ZIPFileSourceResolver#release(Source)": {
+    "hash": "d4e872aaa75dded6",
+    "en": "Releases the given source by closing it.  Any {@link IOException} thrown\nduring close is silently ignored.\n\n@param source the source to release; must have been obtained from this\n              resolver.",
+    "ja": "指定したソースを閉じて解放します。閉じる際に投げられた{@link IOException}は\n黙って無視します。\n\n@param source 解放するソース。このリゾルバから得たものである\n              必要があります。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.zip.ZIPFileSourceResolver#resolve(URI)": {
+    "hash": "0e49ce3631501c0b",
+    "en": "Resolves the given URI to an entry in the ZIP archive.  The entry path is\nderived from the URI's scheme-specific part.\n\n@param uri the URI whose path identifies a ZIP entry; must not be\n           {@code null}.\n@return a new {@link ZIPFileSource} for the entry.\n@throws IOException if an I/O error occurs during construction.",
+    "ja": "指定したURIをZIPアーカイブ内のエントリに解決します。エントリのパスは\nURIのスキーム固有部分から導きます。\n\n@param uri パスでZIPのエントリを指すURI。{@code null}は\n           指定できません。\n@return エントリの新しい{@link ZIPFileSource}。\n@throws IOException 構築中に入出力エラーが発生した場合。"
+  },
+  "net.zamasoft.zstream.resolver.protocol.zip.ZIPFileSourceResolver#zip": {
+    "hash": "d2bd3b5187ebfe91",
+    "en": "The shared ZIP archive used by all sources produced by this resolver.",
+    "ja": "このリゾルバが生成する全てのソースで共有するZIPアーカイブです。"
+  },
+  "net.zamasoft.zstream.resolver.restricted.RestrictedSourceResolver": {
+    "hash": "d994eb8570afb140",
+    "en": "A {@link SourceResolver} decorator that enforces URI-based access control\nusing wildcard patterns.\n\n<p>Patterns are evaluated in the order they were added via {@link #include}\nand {@link #exclude}.  The first pattern that matches the request URI\ndetermines whether access is granted or denied.  If no pattern matches, and\nthe scheme is not {@code data:}, access is denied by default.\n\n<p>{@code data:} URIs are always permitted regardless of the ACL because\nthey carry their content inline and cannot be used for server-side request\nforgery.\n\n<p>The URI is normalised and {@code %xx} sequences in HTTP(S) URIs are\npartially decoded before pattern matching so that the same resource cannot\nbe addressed by two differently-encoded forms.\n\n@author MIYABE Tatsuhiko\n@since 1.0",
+    "ja": "ワイルドカードのパターンを使って、URIに基づくアクセス制御を行う\n{@link SourceResolver}のデコレータです。\n\n<p>パターンは{@link #include}と{@link #exclude}で追加した順に評価します。\n要求のURIに最初に一致したパターンが、アクセスを許可するか拒否するかを\n決めます。どのパターンにも一致せず、スキームが{@code data:}でない場合は、\nデフォルトでアクセスを拒否します。\n\n<p>{@code data:} URIは内容をインラインで持ち、サーバーサイドリクエスト\nフォージェリに使えないため、ACLにかかわらず常に許可します。\n\n<p>同じリソースを異なる2通りのエンコード形式で指せないように、パターンとの\n照合の前にURIを正規化し、HTTP(S)のURIでは{@code %xx}の並びを部分的に\nデコードします。\n\n@author MIYABE Tatsuhiko\n@since 1.0"
+  },
+  "net.zamasoft.zstream.resolver.restricted.RestrictedSourceResolver#RestrictedSourceResolver()": {
+    "hash": "056b73af6a85cbd0",
+    "en": "Constructs a {@code RestrictedSourceResolver} with no delegate.  The\ndelegate must be set via\n{@link #setEnclosedSourceResolver(SourceResolver)} before use.",
+    "ja": "委譲先の無い{@code RestrictedSourceResolver}を構築します。使う前に\n{@link #setEnclosedSourceResolver(SourceResolver)}で委譲先を設定する\n必要があります。"
+  },
+  "net.zamasoft.zstream.resolver.restricted.RestrictedSourceResolver#RestrictedSourceResolver(SourceResolver)": {
+    "hash": "66719269bd1c0a76",
+    "en": "Constructs a {@code RestrictedSourceResolver} wrapping the given delegate.\n\n@param enclosedSourceResolver the delegate resolver to forward permitted\n                              requests to, or {@code null} if no delegate\n                              has been set yet.",
+    "ja": "指定した委譲先を包む{@code RestrictedSourceResolver}を構築します。\n\n@param enclosedSourceResolver 許可した要求の転送先となる委譲先のリゾルバ。\n                              まだ委譲先を設定しない場合は{@code null}。"
+  },
+  "net.zamasoft.zstream.resolver.restricted.RestrictedSourceResolver#exclude(URI)": {
+    "hash": "31d8d528e15e2fa6",
+    "en": "Adds a deny rule for URIs matching the given wildcard pattern.\n\n@param uriPattern the URI pattern to deny; must not be {@code null}.",
+    "ja": "指定したワイルドカードのパターンに一致するURIを拒否する規則を追加します。\n\n@param uriPattern 拒否するURIのパターン。{@code null}は指定できません。"
+  },
+  "net.zamasoft.zstream.resolver.restricted.RestrictedSourceResolver#getEnclosedSourceResolver()": {
+    "hash": "0d4f8f022413e062",
+    "en": "Returns the delegate {@link SourceResolver} to which permitted requests are\nforwarded.\n\n@return the enclosed resolver, or {@code null} if none has been set.",
+    "ja": "許可した要求の転送先となる、委譲先の{@link SourceResolver}を\n返します。\n\n@return 包んでいるリゾルバ。設定されていない場合は{@code null}。"
+  },
+  "net.zamasoft.zstream.resolver.restricted.RestrictedSourceResolver#include(URI)": {
+    "hash": "5841b4482a210a58",
+    "en": "Adds a permit (allow) rule for URIs matching the given wildcard pattern.\nThe pattern is normalised before compilation, and {@code *} is interpreted\nas a single-segment wildcard.\n\n@param uriPattern the URI pattern to allow; must not be {@code null}.",
+    "ja": "指定したワイルドカードのパターンに一致するURIを許可する規則を追加します。\nパターンはコンパイルの前に正規化し、{@code *}は1つのセグメントの中だけに\n一致するワイルドカードとして解釈します。\n\n@param uriPattern 許可するURIのパターン。{@code null}は指定できません。"
+  },
+  "net.zamasoft.zstream.resolver.restricted.RestrictedSourceResolver#permits(URI)": {
+    "hash": "665106fbce0018c4",
+    "en": "Evaluates the ACL for the given URI without resolving it.  Mirrors the\ndecision {@link #resolve(URI, boolean) resolve(uri, false)} would make:\nthe first matching pattern decides; with no match only {@code data:} is\npermitted.\n\n@param uri the URI to check; must not be {@code null}.\n@return {@code true} if the ACL permits the URI.",
+    "ja": "指定したURIについて、解決はせずにACLを評価します。\n{@link #resolve(URI, boolean) resolve(uri, false)}が下すのと同じ判定を\nします。最初に一致したパターンが決め、一致するものが無い場合は{@code data:}\nだけを許可します。\n\n@param uri 確かめるURI。{@code null}は指定できません。\n@return ACLがURIを許可する場合は{@code true}。"
+  },
+  "net.zamasoft.zstream.resolver.restricted.RestrictedSourceResolver#release(Source)": {
+    "hash": "3b362671d0316343",
+    "en": "Delegates release of the source to the enclosed resolver, if one is set.\n\n@param source the source to release; must not be {@code null}.",
+    "ja": "包んでいるリゾルバが設定されていれば、ソースの解放をそのリゾルバに委譲します。\n\n@param source 解放するソース。{@code null}は指定できません。"
+  },
+  "net.zamasoft.zstream.resolver.restricted.RestrictedSourceResolver#reset()": {
+    "hash": "e13f3c772ee72625",
+    "en": "Clears both the enclosed resolver and all ACL patterns, restoring this\ninstance to its initial state.",
+    "ja": "包んでいるリゾルバとACLのパターンを全て消去し、このインスタンスを\n初期状態に戻します。"
+  },
+  "net.zamasoft.zstream.resolver.restricted.RestrictedSourceResolver#resolve(URI)": {
+    "hash": "4b9cd125f099e574",
+    "en": "Resolves the given URI after checking the ACL.  Equivalent to calling\n{@link #resolve(URI, boolean) resolve(uri, false)}.\n\n@param uri the URI to resolve; must not be {@code null}.\n@return a {@link Source} for the resource.\n@throws SecurityException     if the URI is denied by the ACL.\n@throws FileNotFoundException if no delegate resolver is configured.\n@throws IOException           if an I/O error occurs.",
+    "ja": "ACLを確かめてから、指定したURIを解決します。\n{@link #resolve(URI, boolean) resolve(uri, false)}の呼び出しと同じです。\n\n@param uri 解決するURI。{@code null}は指定できません。\n@return リソースの{@link Source}。\n@throws SecurityException     ACLがURIを拒否した場合。\n@throws FileNotFoundException 委譲先のリゾルバが設定されていない場合。\n@throws IOException           入出力エラーが発生した場合。"
+  },
+  "net.zamasoft.zstream.resolver.restricted.RestrictedSourceResolver#resolve(URI,boolean)": {
+    "hash": "bb3e533946c4d31b",
+    "en": "Resolves the given URI, optionally bypassing the ACL check.\n\n@param uri   the URI to resolve; must not be {@code null}.\n@param force {@code true} to skip ACL evaluation and delegate directly.\n@return a {@link Source} for the resource.\n@throws SecurityException     if {@code force} is {@code false} and the URI\n                              is denied by the ACL.\n@throws FileNotFoundException if no delegate resolver is configured.\n@throws IOException           if an I/O error occurs.",
+    "ja": "指定したURIを解決します。ACLの確認を省くこともできます。\n\n@param uri   解決するURI。{@code null}は指定できません。\n@param force ACLの評価を省いて直接委譲する場合は{@code true}。\n@return リソースの{@link Source}。\n@throws SecurityException     {@code force}が{@code false}で、ACLがURIを\n                              拒否した場合。\n@throws FileNotFoundException 委譲先のリゾルバが設定されていない場合。\n@throws IOException           入出力エラーが発生した場合。"
+  },
+  "net.zamasoft.zstream.resolver.restricted.RestrictedSourceResolver#setEnclosedSourceResolver(SourceResolver)": {
+    "hash": "2c04c0d8c4749e2d",
+    "en": "Sets the delegate {@link SourceResolver} to which permitted requests are\nforwarded.\n\n@param enclosedSourceResolver the delegate resolver, or {@code null} to\n                              clear it.",
+    "ja": "許可した要求の転送先となる、委譲先の{@link SourceResolver}を\n設定します。\n\n@param enclosedSourceResolver 委譲先のリゾルバ。設定を消去する場合は\n                              {@code null}。"
+  },
+  "net.zamasoft.zstream.resolver.restricted.RestrictedSourceResolver#toKey(URI)": {
+    "hash": "8074dd23a135e323",
+    "en": "Converts the given URI to a normalised string key used for pattern matching.\nFor {@code http:} and {@code https:} URIs, safe percent-encoded characters\nare decoded in place (except for {@code *}, {@code ?}, {@code #} and\ndelimiter characters in the query string) to prevent encoding-based bypass\nattempts.\n\n@param uri the URI to convert; must not be {@code null}.\n@return the normalised key string; never {@code null}.",
+    "ja": "指定したURIを、パターンとの照合に使う正規化した文字列キーに変換します。\n{@code http:}と{@code https:}のURIでは、エンコードを利用した迂回の試みを\n防ぐため、安全なパーセントエンコードの文字をその場でデコードします(ただし\n{@code *}、{@code ?}、{@code #}と、クエリ文字列内の区切り文字は除きます)。\n\n@param uri 変換するURI。{@code null}は指定できません。\n@return 正規化したキーの文字列。{@code null}にはなりません。"
+  },
+  "net.zamasoft.zstream.resolver.restricted.RestrictedSourceResolver.Pattern": {
+    "hash": "aff1c78f16b94d83",
+    "en": "Internal entry pairing an access-control decision with the compiled\nwildcard pattern it applies to.\n\n@param permit  {@code true} for an include/allow rule; {@code false} for\n               an exclude/deny rule.\n@param pattern the compiled wildcard pattern produced by\n               {@link WildcardHelper#compilePattern(String)}.",
+    "ja": "アクセス制御の判定と、それを適用するコンパイル済みのワイルドカードの\nパターンとを組にした内部のエントリです。\n\n@param permit  許可(include)の規則なら{@code true}、拒否(exclude)の規則なら\n               {@code false}。\n@param pattern {@link WildcardHelper#compilePattern(String)}で\n               コンパイルしたワイルドカードのパターン。"
+  },
+  "net.zamasoft.zstream.resolver.util.AbstractSource": {
+    "hash": "36e71162c7d14c04",
+    "en": "Abstract base class for {@link Source} implementations.\n\n<p>This class stores the source URI and provides default (no-op or\n{@code false}) implementations for the capability-inquiry methods\n({@link #isInputStream()}, {@link #isFile()}, {@link #isReader()}) and for\n{@link #close()}.  Concrete subclasses override the methods that are\nrelevant to their transport mechanism.\n\n@author MIYABE Tatsuhiko\n@since 1.0",
+    "ja": "{@link Source}の実装の抽象基底クラスです。\n\n<p>このクラスはソースのURIを保持し、機能を問い合わせるメソッド\n({@link #isInputStream()}、{@link #isFile()}、{@link #isReader()})と\n{@link #close()}のデフォルトの実装(何もしない、または{@code false}を返す)を\n提供します。具象サブクラスは、それぞれの転送の仕組みに関係するメソッドを\nオーバーライドします。\n\n@author MIYABE Tatsuhiko\n@since 1.0"
+  },
+  "net.zamasoft.zstream.resolver.util.AbstractSource#AbstractSource(URI)": {
+    "hash": "3ba23655f608e6d2",
+    "en": "Constructs an {@code AbstractSource} with the given URI.\n\n@param uri the URI to associate with this source; must not be {@code null}.",
+    "ja": "指定したURIで{@code AbstractSource}を構築します。\n\n@param uri このソースに結び付けるURI。{@code null}は指定できません。"
+  },
+  "net.zamasoft.zstream.resolver.util.AbstractSource#close()": {
+    "hash": "35fcf10e4fcd694d",
+    "en": "Default implementation does nothing.  Subclasses that hold open connections\nor streams should override this method to release those resources.\n\n@throws IOException if an I/O error occurs during close.",
+    "ja": "デフォルトの実装は何もしません。接続やストリームを開いたまま保持する\nサブクラスは、このメソッドをオーバーライドしてそれらのリソースを解放してください。\n\n@throws IOException 閉じる際に入出力エラーが発生した場合。"
+  },
+  "net.zamasoft.zstream.resolver.util.AbstractSource#getURI()": {
+    "hash": "c32cef23e8373203",
+    "en": "Returns the URI associated with this source.\n\n@return the URI; never {@code null}.",
+    "ja": "このソースに結び付いたURIを返します。\n\n@return URI。{@code null}にはなりません。"
+  },
+  "net.zamasoft.zstream.resolver.util.AbstractSource#isFile()": {
+    "hash": "56f96c3e13f052a4",
+    "en": "Default implementation returns {@code false}.  Subclasses that are backed\nby a local file should override this method.\n\n@return {@code false}.\n@throws IOException if an I/O error occurs.",
+    "ja": "デフォルトの実装は{@code false}を返します。ローカルファイルに基づく\nサブクラスは、このメソッドをオーバーライドしてください。\n\n@return {@code false}。\n@throws IOException 入出力エラーが発生した場合。"
+  },
+  "net.zamasoft.zstream.resolver.util.AbstractSource#isInputStream()": {
+    "hash": "aebfc23c67b3efcf",
+    "en": "Default implementation returns {@code false}.  Subclasses that support\nbinary stream access should override this method.\n\n@return {@code false}.\n@throws IOException if an I/O error occurs.",
+    "ja": "デフォルトの実装は{@code false}を返します。バイナリストリームでのアクセスに\n対応するサブクラスは、このメソッドをオーバーライドしてください。\n\n@return {@code false}。\n@throws IOException 入出力エラーが発生した場合。"
+  },
+  "net.zamasoft.zstream.resolver.util.AbstractSource#isReader()": {
+    "hash": "890d46ad1c23e523",
+    "en": "Default implementation returns {@code false}.  Subclasses that support\ncharacter reader access should override this method.\n\n@return {@code false}.\n@throws IOException if an I/O error occurs.",
+    "ja": "デフォルトの実装は{@code false}を返します。文字のリーダでのアクセスに\n対応するサブクラスは、このメソッドをオーバーライドしてください。\n\n@return {@code false}。\n@throws IOException 入出力エラーが発生した場合。"
+  },
+  "net.zamasoft.zstream.resolver.util.AbstractSource#toString()": {
+    "hash": "e2aae4026ff9d400",
+    "en": "Returns the string form of this source's URI.\n\n@return the URI as a string; never {@code null}.",
+    "ja": "このソースのURIの文字列形式を返します。\n\n@return 文字列にしたURI。{@code null}にはなりません。"
+  },
+  "net.zamasoft.zstream.resolver.util.AbstractSource#uri": {
+    "hash": "7170f3b438d6be62",
+    "en": "The URI associated with this source; never {@code null}.",
+    "ja": "このソースに結び付いたURIです。{@code null}にはなりません。"
+  },
+  "net.zamasoft.zstream.resolver.util.MimeTypes": {
+    "hash": "88a1ccf56b8a4068",
+    "en": "Guesses the MIME type of a document from its file name.\n\n<p>\nThe file, URL and ZIP sources had their own copies of this table, and the ZIP\ncopy had lost the Markdown suffixes (2026-10-04).\n</p>\n\n@since 1.0",
+    "ja": "ファイル名から文書のMIME型を推定します。\n\n<p>\nファイル・URL・ZIPの各ソースがこの表をそれぞれ複製して持っており、ZIPの\n複製ではMarkdownの拡張子が抜け落ちていました(2026-10-04)。\n</p>\n\n@since 1.0"
+  },
+  "net.zamasoft.zstream.resolver.util.MimeTypes#fromFileName(String)": {
+    "hash": "8125022882d08aba",
+    "en": "Returns the MIME type for the suffix of the given file name:\n{@code text/html} for {@code .html}/{@code .htm}, {@code text/xml} for\n{@code .xml}/{@code .xhtml}/{@code .xht}, {@code text/markdown} for\n{@code .md}/{@code .markdown}, and {@code null} otherwise.\n\n@param name a file name or path; must not be {@code null}.\n@return the MIME type, or {@code null} if the suffix is not known.",
+    "ja": "指定したファイル名の拡張子に対応するMIME型を返します。\n{@code .html}/{@code .htm}には{@code text/html}、\n{@code .xml}/{@code .xhtml}/{@code .xht}には{@code text/xml}、\n{@code .md}/{@code .markdown}には{@code text/markdown}を返し、\nそれ以外は{@code null}を返します。\n\n@param name ファイル名またはパス。{@code null}は指定できません。\n@return MIME型。既知の拡張子でない場合は{@code null}。"
+  },
+  "net.zamasoft.zstream.resolver.util.SimpleSourceMetadata": {
+    "hash": "2fbb708a22ed516e",
+    "en": "Simple implementation of SourceMetadata.\n\n@author MIYABE Tatsuhiko\n@since 1.0",
+    "ja": "SourceMetadataの簡易な実装です。\n\n@author MIYABE Tatsuhiko\n@since 1.0"
+  },
+  "net.zamasoft.zstream.resolver.util.SourceWrapper": {
+    "hash": "17524fa4a0916544",
+    "en": "A transparent decorator for {@link Source} that forwards every method call\nto the wrapped delegate source.\n\n<p>Subclasses may override individual methods to add behaviour without\nreimplementing the full {@link Source} interface.\n\n@author MIYABE Tatsuhiko\n@since 1.0",
+    "ja": "全てのメソッドの呼び出しを、包んだ委譲先のソースへ転送する\n{@link Source}の透過的なデコレータです。\n\n<p>サブクラスは、{@link Source}インターフェース全体を実装し直さずに、\n個々のメソッドをオーバーライドして振る舞いを追加できます。\n\n@author MIYABE Tatsuhiko\n@since 1.0"
+  },
+  "net.zamasoft.zstream.resolver.util.SourceWrapper#SourceWrapper(Source)": {
+    "hash": "d9005a9f0cd2aeaa",
+    "en": "Constructs a {@code SourceWrapper} that delegates to the given source.\n\n@param source the source to wrap; must not be {@code null}.",
+    "ja": "指定したソースに委譲する{@code SourceWrapper}を構築します。\n\n@param source 包むソース。{@code null}は指定できません。"
+  },
+  "net.zamasoft.zstream.resolver.util.SourceWrapper#close()": {
+    "hash": "063cb0ba167992b4",
+    "en": "{@inheritDoc}",
+    "ja": "{@inheritDoc}"
+  },
+  "net.zamasoft.zstream.resolver.util.SourceWrapper#exists()": {
+    "hash": "063cb0ba167992b4",
+    "en": "{@inheritDoc}",
+    "ja": "{@inheritDoc}"
+  },
+  "net.zamasoft.zstream.resolver.util.SourceWrapper#getEncoding()": {
+    "hash": "063cb0ba167992b4",
+    "en": "{@inheritDoc}",
+    "ja": "{@inheritDoc}"
+  },
+  "net.zamasoft.zstream.resolver.util.SourceWrapper#getFile()": {
+    "hash": "063cb0ba167992b4",
+    "en": "{@inheritDoc}",
+    "ja": "{@inheritDoc}"
+  },
+  "net.zamasoft.zstream.resolver.util.SourceWrapper#getInputStream()": {
+    "hash": "063cb0ba167992b4",
+    "en": "{@inheritDoc}",
+    "ja": "{@inheritDoc}"
+  },
+  "net.zamasoft.zstream.resolver.util.SourceWrapper#getLength()": {
+    "hash": "063cb0ba167992b4",
+    "en": "{@inheritDoc}",
+    "ja": "{@inheritDoc}"
+  },
+  "net.zamasoft.zstream.resolver.util.SourceWrapper#getMimeType()": {
+    "hash": "063cb0ba167992b4",
+    "en": "{@inheritDoc}",
+    "ja": "{@inheritDoc}"
+  },
+  "net.zamasoft.zstream.resolver.util.SourceWrapper#getReader()": {
+    "hash": "063cb0ba167992b4",
+    "en": "{@inheritDoc}",
+    "ja": "{@inheritDoc}"
+  },
+  "net.zamasoft.zstream.resolver.util.SourceWrapper#getURI()": {
+    "hash": "063cb0ba167992b4",
+    "en": "{@inheritDoc}",
+    "ja": "{@inheritDoc}"
+  },
+  "net.zamasoft.zstream.resolver.util.SourceWrapper#getValidity()": {
+    "hash": "063cb0ba167992b4",
+    "en": "{@inheritDoc}",
+    "ja": "{@inheritDoc}"
+  },
+  "net.zamasoft.zstream.resolver.util.SourceWrapper#isFile()": {
+    "hash": "063cb0ba167992b4",
+    "en": "{@inheritDoc}",
+    "ja": "{@inheritDoc}"
+  },
+  "net.zamasoft.zstream.resolver.util.SourceWrapper#isInputStream()": {
+    "hash": "063cb0ba167992b4",
+    "en": "{@inheritDoc}",
+    "ja": "{@inheritDoc}"
+  },
+  "net.zamasoft.zstream.resolver.util.SourceWrapper#isReader()": {
+    "hash": "063cb0ba167992b4",
+    "en": "{@inheritDoc}",
+    "ja": "{@inheritDoc}"
+  },
+  "net.zamasoft.zstream.resolver.util.SourceWrapper#source": {
+    "hash": "167e5c09ac039796",
+    "en": "The delegate source to which all calls are forwarded.",
+    "ja": "全ての呼び出しの転送先となる委譲先のソースです。"
+  },
+  "net.zamasoft.zstream.resolver.util.SourceWrapper#toString()": {
+    "hash": "69d7dd1e68cf1e73",
+    "en": "Returns the string representation of the wrapped source.\n\n@return the delegate's {@link #toString()} result; never {@code null}.",
+    "ja": "包んだソースの文字列表現を返します。\n\n@return 委譲先の{@link #toString()}の結果。{@code null}にはなりません。"
+  },
+  "net.zamasoft.zstream.resolver.util.URIHelper": {
+    "hash": "29c9165719de18ba",
+    "en": "Helper class for URI parsing. Parses more flexibly than Java's URI class.",
+    "ja": "URIを解析するためのヘルパークラスです。JavaのURIクラスより柔軟に解析します。"
+  },
+  "net.zamasoft.zstream.resolver.util.URIHelper#create(String,String)": {
+    "hash": "83b59bcb3b24d7d3",
+    "en": "Creates a URI.\n\n@param encoding The encoding for multibyte characters.\n@param href     The URI string.\n@return The generated URI.\n@throws URISyntaxException If the URI is invalid.",
+    "ja": "URIを作成します。\n\n@param encoding マルチバイト文字のエンコーディング。\n@param href     URIの文字列。\n@return 生成したURI。\n@throws URISyntaxException URIが不正な場合。"
+  },
+  "net.zamasoft.zstream.resolver.util.URIHelper#resolve(String,URI,String)": {
+    "hash": "cf1875c32d8ba200",
+    "en": "Resolves a relative URI.\n\n@param encoding The encoding for multibyte characters.\n@param baseURI  The base URI.\n@param href     The relative URI string.\n@return The resolved URI.\n@throws URISyntaxException If the URI is invalid.",
+    "ja": "相対URIを解決します。\n\n@param encoding マルチバイト文字のエンコーディング。\n@param baseURI  基準URI。\n@param href     相対URIの文字列。\n@return 解決したURI。\n@throws URISyntaxException URIが不正な場合。"
+  },
+  "net.zamasoft.zstream.resolver.util.UnknownSourceValidity": {
+    "hash": "0e7a7263b9d48e28",
+    "en": "SourceValidity that always returns UNKNOWN.",
+    "ja": "常にUNKNOWNを返すSourceValidityです。"
+  },
+  "net.zamasoft.zstream.resolver.util.ValidSourceValidity": {
+    "hash": "85d81719972dcadb",
+    "en": "SourceValidity that always returns VALID.",
+    "ja": "常にVALIDを返すSourceValidityです。"
+  }
 }
