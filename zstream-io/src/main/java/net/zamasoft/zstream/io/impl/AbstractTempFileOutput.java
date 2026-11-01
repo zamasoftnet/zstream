@@ -7,7 +7,9 @@ import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -190,9 +192,15 @@ public abstract class AbstractTempFileOutput implements FragmentedOutput {
 	protected Fragment first = null;
 	protected Fragment last = null;
 
-	// Spill Management
-	// We scan for the largest fragment only when spilling is required.
-	// This avoids overhead during normal writes.
+	/**
+	 * The fragments holding memory, the largest first and the older first among equals: the next to spill. Scanning
+	 * every fragment for it on each new chunk took 84% of a 4,000-page conversion once the output reached
+	 * {@link #maxMemory}, and it, not the disk, was behind the falling FORK figures in {@link Config#DEFAULT}: the phase
+	 * {@code cliff} went from 240 to 573MB/s at 16MB and from 32 to 81MB/s at 256MB, with the same spills (2026-10-31).
+	 * A fragment is taken out before its {@link Fragment#memoryUsage} changes.
+	 */
+	private final TreeSet<Fragment> inMemory = new TreeSet<>(
+			Comparator.<Fragment>comparingLong(f -> -f.memoryUsage).thenComparingInt(f -> f.id));
 
 	/**
 	 * A contiguous piece of fragment data stored either in memory or on disk.
@@ -367,7 +375,9 @@ public abstract class AbstractTempFileOutput implements FragmentedOutput {
 				activeChunk = new MemoryChunk(chunkSize);
 				chunks.add(activeChunk);
 
+				inMemory.remove(this);
 				this.memoryUsage += chunkSize;
+				inMemory.add(this);
 				updateGlobalMemory(chunkSize);
 			}
 		}
@@ -376,8 +386,8 @@ public abstract class AbstractTempFileOutput implements FragmentedOutput {
 		 * Writes all in-memory chunks of this fragment to the shared temporary file,
 		 * replacing them with {@link FileChunk}s and releasing the memory budget.
 		 * <p>
-		 * Contiguous runs of {@link MemoryChunk}s are flushed in a single scatter-write
-		 * operation ({@link FileChannel#write(java.nio.ByteBuffer[])}) for efficiency.
+		 * The {@link MemoryChunk}s are flushed in a single scatter-write operation
+		 * ({@link FileChannel#write(java.nio.ByteBuffer[])}) for efficiency.
 		 * After the call, {@link #memoryUsage} is zero and {@link #activeChunk} is
 		 * {@code null}.
 		 * </p>
@@ -391,42 +401,27 @@ public abstract class AbstractTempFileOutput implements FragmentedOutput {
 			// Prepare file
 			ensureFileOpen();
 
-			// Allocate a buffer for bulk writing if needed, but here we can just write
-			// chunks directly
+			// Chunks join at the end and a spill takes all the memory ones, so these are the tail: a fragment spilled
+			// again and again must not walk the file chunks of all its earlier spills (57% of a 32,000-page PDF,
+			// 2026-10-31).
+			int firstMemoryIndex = chunks.size();
+			while (firstMemoryIndex > 0 && chunks.get(firstMemoryIndex - 1) instanceof MemoryChunk) {
+				--firstMemoryIndex;
+			}
+
 			// FileChannel.write(ByteBuffer[]) is perfect for this.
-
-			List<ByteBuffer> buffersToWrite = new ArrayList<>();
+			List<ByteBuffer> buffersToWrite = new ArrayList<>(chunks.size() - firstMemoryIndex);
 			long bytesToSpill = 0;
-
-			// We only spill MemoryChunks that are currently in the list
-			// We replace them with FileChunks.
-
-			int firstMemoryIndex = -1;
-
-			for (int i = 0; i < chunks.size(); i++) {
-				Chunk c = chunks.get(i);
-				if (c instanceof MemoryChunk) {
-					MemoryChunk mc = (MemoryChunk)c;
-					if (firstMemoryIndex == -1)
-						firstMemoryIndex = i;
-					buffersToWrite.add(ByteBuffer.wrap(mc.data, 0, mc.length));
-					bytesToSpill += mc.length;
-				} else if (firstMemoryIndex != -1) {
-					// End of a contiguous block of memory chunks -> write them
-					flushMemoryBlock(firstMemoryIndex, i, buffersToWrite, bytesToSpill);
-					firstMemoryIndex = -1;
-					buffersToWrite.clear();
-					bytesToSpill = 0;
-				}
+			for (int i = firstMemoryIndex; i < chunks.size(); i++) {
+				MemoryChunk mc = (MemoryChunk)chunks.get(i);
+				buffersToWrite.add(ByteBuffer.wrap(mc.data, 0, mc.length));
+				bytesToSpill += mc.length;
 			}
-
-			// Handle trailing memory chunks
-			if (firstMemoryIndex != -1) {
-				flushMemoryBlock(firstMemoryIndex, chunks.size(), buffersToWrite, bytesToSpill);
-			}
+			flushMemoryBlock(firstMemoryIndex, chunks.size(), buffersToWrite, bytesToSpill);
 
 			// Reset memory usage for this fragment
 			updateGlobalMemory(-this.memoryUsage);
+			inMemory.remove(this);
 			this.memoryUsage = 0;
 			this.activeChunk = null; // Forces new chunk on next write
 		}
@@ -649,6 +644,7 @@ public abstract class AbstractTempFileOutput implements FragmentedOutput {
 			fragment.memoryUsage = 0;
 			fragment.activeChunk = null;
 		}
+		this.inMemory.clear();
 		if (this.fragments.isEmpty()) {
 			this.addFragment();
 		}
@@ -714,26 +710,9 @@ public abstract class AbstractTempFileOutput implements FragmentedOutput {
 	 * @throws IOException if an I/O error occurs during the spill
 	 */
 	private void spillIfNeeded() throws IOException {
-		while (currentMemoryUsage >= maxMemory) {
-			final Fragment candidate = findFragmentWithMostMemory();
-			if (candidate == null || candidate.memoryUsage == 0) {
-				break;
-			}
-			candidate.spill();
+		while (currentMemoryUsage >= maxMemory && !inMemory.isEmpty()) {
+			inMemory.first().spill();
 		}
-	}
-
-	/**
-	 * Returns the fragment that currently occupies the most memory, or
-	 * {@code null} if the fragment list is empty.
-	 *
-	 * @return fragment with the highest {@link Fragment#memoryUsage}, or
-	 *         {@code null}
-	 */
-	private Fragment findFragmentWithMostMemory() {
-		return fragments.stream()
-				.max(java.util.Comparator.comparingLong(f -> f.memoryUsage))
-				.orElse(null);
 	}
 
 	/**
@@ -772,6 +751,7 @@ public abstract class AbstractTempFileOutput implements FragmentedOutput {
 			raf = null;
 			tempFile = null;
 			fragments.clear();
+			inMemory.clear();
 			first = last = null;
 			currentMemoryUsage = 0;
 			totalLength = 0;
